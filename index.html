@@ -97,7 +97,7 @@
     const sounds = { roll: new Audio('https://www.soundjay.com/buttons/button-27.mp3'), correct: new Audio('https://www.soundjay.com/buttons/button-3.mp3'), wrong: new Audio('https://www.soundjay.com/buttons/button-10.mp3') };
     function play(t){ sounds[t].currentTime=0; sounds[t].play().catch(()=>{}); }
 
-const questions = [
+    const questions = [
     // ANALYTICAL (8)
     { id:1, mod:"ANALYTICAL", text:"Closeness of a measured value to the true value is:", options:["Precision","Accuracy","Linearity","Selectivity"], correct:"Accuracy", explanation:"Accuracy represents the closeness of a measurement to the true or accepted value.", price:50, rent:20 },
     { id:2, mod:"ANALYTICAL", text:"Reproducibility of measurements in a series is:", options:["Accuracy","Precision","Sensitivity","Speed"], correct:"Precision", explanation:"Precision measures how consistent repeated results are to each other.", price:50, rent:20 },
@@ -105,7 +105,7 @@ const questions = [
     { id:4, mod:"ANALYTICAL", text:"Accuracy is usually expressed as:", options:["Standard Deviation","Percent Error","Variance","Range"], correct:"Percent Error", explanation:"Percent error measures the relative difference between the experimental and true value.", price:50, rent:20 },
     { id:5, mod:"ANALYTICAL", text:"Precision is usually expressed as:", options:["Percent Error","Relative Standard Deviation (RSD)","Mean","Sensitivity"], correct:"Relative Standard Deviation (RSD)", explanation:"RSD represents the spread of data relative to the mean.", price:50, rent:20 },
     { id:6, mod:"ANALYTICAL", text:"Difference between measured and true value:", options:["Random Error","Systematic Error","Precision","Variance"], correct:"Systematic Error", explanation:"Systematic errors cause consistent bias in a specific direction.", price:60, rent:25 },
-    { id:7, mod:"ANALYTICAL", text:"Error causing data to scatter symmetrically:", options:["Systematic Error","Random Error","Constant Error","Blunder"], correct:"Random Error", explanation:"Random errors are unpredictable and cause data to scatter around the mean.", price:60, rent:25 },
+    { id:7, mod:"ANALYTICAL", text:"Error causing data to scatter around:", options:["Systematic Error","Random Error","Constant Error","Blunder"], correct:"Random Error", explanation:"Random errors are unpredictable and cause data to scatter around the mean.", price:60, rent:25 },
     { id:8, mod:"ANALYTICAL", text:"Smallest amount an instrument can detect:", options:["Accuracy","Limit of Detection (LOD)","Precision","Sensitivity"], correct:"Limit of Detection (LOD)", explanation:"LOD is the lowest concentration level that can be reliably distinguished from background noise.", price:70, rent:30 },
 
     // TITRATIONS (8)
@@ -159,9 +159,6 @@ const questions = [
     { id:48, mod:"BONDING", text:"A pi bond (π) is formed by ___ overlap:", options:["End-to-end","Side-to-side","Axial","Direct"], correct:"Side-to-side", explanation:"Pi bonds are formed by the parallel overlap of p-orbitals.", price:100, rent:40 }
 ];
 
-    
-    const tileNames = ["GO", "ANALYTICAL", "BONDING", "AUDIT", "TITRATIONS", "VSEPR", "CONC.", "TITRATIONS", "ACID-BASE", "AUDIT", "ACID-BASE", "TITRATIONS", "LAB BONUS", "ANALYTICAL", "VSEPR", "CONC.", "AUDIT", "CONC.", "BONDING", "ACID-BASE", "BONDING", "VSEPR"];
-    const ownerCols = ["#6c5ce7", "#00d2d3", "#e67e22", "#ff9ff3"];
     let players = [], turn = 0, rolling = false, owners = {}, chars = [{id:0, icon:'🐱', n:'CAT-ALYST', a:false},{id:1, icon:'🐶', n:'DOG-MA', a:false},{id:2, icon:'🦊', n:'FOX-PHATE', a:false},{id:3, icon:'🐰', n:'BUN-SEN', a:false}];
     let usedQsGlobal = [];
 
@@ -232,13 +229,13 @@ const questions = [
         if(tileNames[p.pos] === "LAB BONUS") { p.pts += 40; alert("LAB BONUS! +40 PTS"); endTurn(); return; }
         if(tileNames[p.pos] === "AUDIT") { p.pts -= 20; alert("Audit Penalty! -20 PTS"); endTurn(); return; }
         if(owners[p.pos] !== undefined && owners[p.pos] !== turn){
-            let rent = 25; // Base rent
+            let rent = 25;
             let o = players[owners[p.pos]]; p.pts -= rent; o.pts += rent;
-            alert(`Rent Paid: ${rent} PTS to ${o.icon}`); endTurn();
+            alert(`Rent Paid: 25 PTS to ${o.icon}`); endTurn();
         } else { showQuestion(p.pos, p); }
     }
 
-   function showQuestion(tid, p) {
+    function showQuestion(tid, p) {
         let pool = questions.filter(q => !usedQsGlobal.includes(q.id));
         if (pool.length === 0) { usedQsGlobal = []; pool = questions; }
         const q = pool[Math.floor(Math.random() * pool.length)];
@@ -266,8 +263,6 @@ const questions = [
     function showResult(isCorrect, q, tid, p) {
         const area = document.getElementById('optionsArea');
         const color = isCorrect ? '#00d2d3' : '#ff7675';
-        
-        // Update the Modal UI to show feedback
         document.getElementById('qHeader').innerText = isCorrect ? "CORRECT!" : "INCORRECT!";
         document.getElementById('qHeader').style.color = color;
         
@@ -275,32 +270,30 @@ const questions = [
             <div style="text-align:left; padding:15px; background:rgba(255,255,255,0.05); border-radius:15px; margin-bottom:15px;">
                 <p style="font-size:0.9rem;">${q.explanation}</p>
             </div>
-            <button class="btn" style="background:var(--primary)" onclick="processResult(${isCorrect}, ${tid}, ${JSON.stringify(p).replace(/"/g, "'")}, ${q.price})">NEXT</button>
+            <button class="btn" style="background:var(--primary)" onclick="processResult(${isCorrect}, ${tid}, ${q.price})">NEXT</button>
         `;
     }
+
     function processResult(isCorrect, tid, price) {
-    document.getElementById('qHeader').style.color = 'white';
-    let p = players[turn]; // This grabs the REAL player object
-
-    if (isCorrect) {
-        play('correct');
-        p.pts += 20; // This updates the REAL player object
-        updateStats(); // Now this function will see the correct new value
-
-        if (owners[tid] === undefined && p.pts >= price) {
-            showBuyMenu(tid, p, price);
+        document.getElementById('qHeader').style.color = 'white';
+        let p = players[turn];
+        if (isCorrect) {
+            play('correct');
+            p.pts += 20;
+            updateStats();
+            if (owners[tid] === undefined && p.pts >= price) showBuyMenu(tid, p, price);
+            else endTurn();
         } else {
+            play('wrong');
+            p.pts -= 30;
+            updateStats();
             endTurn();
         }
-    } else {
-        play('wrong');
-        p.pts -= 30; // Updates the REAL player object
-        updateStats();
-        endTurn();
     }
+
     function showBuyMenu(tid, p, price){
         const area = document.getElementById('optionsArea');
-        document.getElementById('qText').innerHTML = `CORRECT! Spend ${price} PTS to buy ${tileNames[tid]}?`;
+        document.getElementById('qText').innerHTML = `Spend ${price} PTS to buy this tile?`;
         area.innerHTML = '';
         const b = document.createElement('button'); b.className = 'btn'; b.style.background = 'var(--gold)'; b.style.color='#000'; b.innerText = `PURCHASE`;
         b.onclick = () => {
@@ -331,6 +324,7 @@ const questions = [
         document.getElementById('stat'+turn).classList.add('active-turn');
         updateStatus();
     }
+
     function updateStats(){ players.forEach((p,i)=>document.getElementById('pts'+i).innerText = p.pts); }
     function updateStatus(){ document.getElementById('statusLabel').innerText = players[turn].icon + "'S TURN"; }
     function updatePieces(){
@@ -339,9 +333,10 @@ const questions = [
             if(t && pc){ pc.style.left = (t.offsetLeft + (i%2)*10 + 2)+'px'; pc.style.top = (t.offsetTop + Math.floor(i/2)*10 + 2)+'px'; }
         });
     }
+
     function checkEndGame(){
-        let win = [...players].sort((a,b) => b.pts - a.pts)[0];
-        alert(`GAME OVER! ${win.icon} is the Top Researcher with ${win.pts} PTS!`);
+        let win = [...players].sort((a,b) => b.pts - a.pts);
+        alert(`GAME OVER! ${win.icon} wins with ${win.pts} PTS!`);
         location.reload();
     }
 </script>

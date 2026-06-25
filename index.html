@@ -325,16 +325,37 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         area.appendChild(b); area.appendChild(s);
     }
 
-    function buySabotage(){
-        let p = players[turn]; if(p.pts < 50) return; p.pts -= 50;
-        let ts = players.filter((_,i)=>i!==turn);
-        if(ts.length > 0){
-            let t = ts[Math.floor(Math.random()*ts.length)];
-            t.skip = true; alert(`Chance! ${t.icon} skip next turn.`);
+    function buySabotage() {
+        let p = players[turn]; 
+        if (p.pts < 50) {
+            alert("Not enough points! You need 50 PTS.");
+            return;
         }
+
+        // Create a choice menu for the sabotage
+        let choice = prompt("Choose Sabotage:\n1. Skip a player's turn\n2. Deduct 30 PTS from a player");
+        
+        let targets = players.filter((_, i) => i !== turn);
+        if (targets.length === 0) return;
+        
+        // Pick a random target from the remaining players
+        let target = targets[Math.floor(Math.random() * targets.length)];
+
+        if (choice === "1") {
+            p.pts -= 50;
+            target.skip = true;
+            alert(`Sabotage! ${target.icon} will skip their next turn.`);
+        } else if (choice === "2") {
+            p.pts -= 50;
+            target.pts -= 30;
+            alert(`Sabotage! You deducted 30 PTS from ${target.icon}.`);
+        } else {
+            alert("Invalid choice. Sabotage cancelled.");
+            return;
+        }
+        
         updateStats();
     }
-
     function endTurn(){
         document.getElementById('qOverlay').style.display = 'none';
         updateStats(); document.getElementById('stat'+turn).classList.remove('active-turn');

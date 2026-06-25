@@ -326,34 +326,62 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
     }
 
     function buySabotage() {
-        let p = players[turn]; 
+        let p = players[turn];
         if (p.pts < 50) {
-            alert("Not enough points! You need 50 PTS.");
+            alert("Need 50 PTS to buy a Chance/Sabotage!");
             return;
         }
 
-        // Create a choice menu for the sabotage
-        let choice = prompt("Choose Sabotage:\n1. Skip a player's turn\n2. Deduct 30 PTS from a player");
-        
-        let targets = players.filter((_, i) => i !== turn);
-        if (targets.length === 0) return;
-        
-        // Pick a random target from the remaining players
-        let target = targets[Math.floor(Math.random() * targets.length)];
+        const area = document.getElementById('optionsArea');
+        document.getElementById('qHeader').innerText = "CHOOSE SABOTAGE";
+        document.getElementById('qText').innerText = "Spend 50 PTS to target an opponent:";
+        area.innerHTML = '';
 
-        if (choice === "1") {
-            p.pts -= 50;
+        // Create a button for each opponent
+        players.forEach((target, i) => {
+            if (i !== turn) { // Cannot target yourself
+                const b = document.createElement('button');
+                b.className = 'btn-mcq';
+                b.innerHTML = `Target ${target.icon}`;
+                b.onclick = () => {
+                    // Show second menu: Choose Effect
+                    showSabotageOptions(target, p);
+                };
+                area.appendChild(b);
+            }
+        });
+        document.getElementById('qOverlay').style.display = 'flex';
+    }
+
+    function showSabotageOptions(target, attacker) {
+        const area = document.getElementById('optionsArea');
+        document.getElementById('qText').innerText = `Targeting ${target.icon}. Choose effect:`;
+        area.innerHTML = '';
+
+        const skipBtn = document.createElement('button');
+        skipBtn.className = 'btn-mcq';
+        skipBtn.innerHTML = "Skip their next turn";
+        skipBtn.onclick = () => {
+            attacker.pts -= 50;
             target.skip = true;
-            alert(`Sabotage! ${target.icon} will skip their next turn.`);
-        } else if (choice === "2") {
-            p.pts -= 50;
+            closeSabotage(`Sabotage! ${target.icon} will skip their next turn.`);
+        };
+        area.appendChild(skipBtn);
+
+        const deductBtn = document.createElement('button');
+        deductBtn.className = 'btn-mcq';
+        deductBtn.innerHTML = "Deduct 30 PTS";
+        deductBtn.onclick = () => {
+            attacker.pts -= 50;
             target.pts -= 30;
-            alert(`Sabotage! You deducted 30 PTS from ${target.icon}.`);
-        } else {
-            alert("Invalid choice. Sabotage cancelled.");
-            return;
-        }
-        
+            closeSabotage(`Sabotage! You deducted 30 PTS from ${target.icon}.`);
+        };
+        area.appendChild(deductBtn);
+    }
+
+    function closeSabotage(msg) {
+        document.getElementById('qOverlay').style.display = 'none';
+        alert(msg);
         updateStats();
     }
     function endTurn(){

@@ -52,7 +52,6 @@
         <div class="lobby-grid">
          <div class="instr-panel">
     <h3 style="color:var(--gold); margin:0 0 10px 0; font-size:1rem;">Game Rules</h3>
-    
     <div class="instr-item">
         <div class="instr-num">1</div>
         <span><b>Setup:</b> Select 1 to 4 players from the cards on the right to start.</span>
@@ -71,9 +70,8 @@
     </div>
     <div class="instr-item">
         <div class="instr-num">5</div>
-        <span><b>Economy:</b> Earn 50 PTS per GO. You need 50 PTS to purchase property.</span>
+        <span><b>Economy:</b> Earn 50 PTS per GO. You need at least 50 PTS to purchase property.</span>
     </div>
-</div>
             <div class="char-selection">
                 <h3 style="margin:0 0 10px 0; font-size:1rem;">Characters</h3>
                 <div class="char-grid">
@@ -386,10 +384,10 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
 
         const deductBtn = document.createElement('button');
         deductBtn.className = 'btn-mcq';
-        deductBtn.innerHTML = "Deduct 30 PTS";
+        deductBtn.innerHTML = "Deduct 20 PTS";
         deductBtn.onclick = () => {
             attacker.pts -= 50;
-            target.pts -= 30;
+            target.pts -= 20;
             closeSabotage(`Sabotage! You deducted 30 PTS from ${target.icon}.`);
         };
         area.appendChild(deductBtn);

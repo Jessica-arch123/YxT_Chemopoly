@@ -251,7 +251,9 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
             p.pts += 50; p.rounds++;
             document.getElementById('roundAlert').style.display='block'; 
             setTimeout(()=>document.getElementById('roundAlert').style.display='none', 1500); 
-            if(p.rounds > 3) checkEndGame();
+            if(p.rounds > 3) {
+        checkEndGame(p); // Pass the winning player object 'p'
+        return;
         }
         updatePieces(); setTimeout(()=>handleLanding(p), 600);
     }
@@ -415,9 +417,9 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         });
     }
 
-    function checkEndGame(){
-        let win = [...players].sort((a,b) => b.pts - a.pts);
-        alert(`GAME OVER! ${win.icon} wins with ${win.pts} PTS!`);
+        function checkEndGame(winner) {
+        // 'winner' is now passed directly from movePlayer
+        alert(`GAME OVER! ${winner.icon} is the winner with ${winner.pts} PTS!`);
         location.reload();
     }
 </script>

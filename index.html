@@ -323,8 +323,12 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
             play('correct');
             p.pts += 20;
             updateStats();
-            if (owners[tid] === undefined && p.pts >= price) showBuyMenu(tid, p, price);
-            else endTurn();
+            // Pass price correctly here
+            if (owners[tid] === undefined && p.pts >= price) {
+                showBuyMenu(tid, p, price);
+            } else {
+                endTurn();
+            }
         } else {
             play('wrong');
             p.pts -= 30;
@@ -333,20 +337,33 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         }
     }
 
-    function showBuyMenu(tid, p, price){
+    function showBuyMenu(tid, p, price) {
         const area = document.getElementById('optionsArea');
         document.getElementById('qText').innerHTML = `Spend ${price} PTS to buy this tile?`;
         area.innerHTML = '';
-        const b = document.createElement('button'); b.className = 'btn'; b.style.background = 'var(--gold)'; b.style.color='#000'; b.innerText = `PURCHASE`;
+        
+        const b = document.createElement('button'); 
+        b.className = 'btn'; 
+        b.style.background = 'var(--gold)'; 
+        b.style.color = '#000'; 
+        b.innerText = `PURCHASE`;
         b.onclick = () => {
-            p.pts -= price; owners[tid] = turn;
-            const t = document.getElementById('t'+tid);
-            t.style.background = ownerCols[p.id]; t.innerHTML += `<span class="owner-tag">${p.icon}</span>`;
+            p.pts -= price; 
+            owners[tid] = turn;
+            const t = document.getElementById('t' + tid);
+            t.style.background = ownerCols[p.id]; 
+            t.innerHTML += `<span class="owner-tag">${p.icon}</span>`;
             endTurn();
         };
-        const s = document.createElement('button'); s.className = 'btn'; s.style.background='#4b5563'; s.innerText = "PASS";
+        
+        const s = document.createElement('button'); 
+        s.className = 'btn'; 
+        s.style.background = '#4b5563'; 
+        s.innerText = "PASS";
         s.onclick = endTurn;
-        area.appendChild(b); area.appendChild(s);
+        
+        area.appendChild(b); 
+        area.appendChild(s);
     }
 
     function buySabotage() {

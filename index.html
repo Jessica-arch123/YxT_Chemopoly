@@ -6,42 +6,49 @@
     <title>CHEMOPOLY</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6c5ce7; --accent: #00d2d3; --bg: #0f172a; --card: rgba(255, 255, 255, 0.1); --gold: #feca57; --pink: #ff9ff3; --red: #ff7675; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 10px; margin: 0; min-height: 100vh; overflow-x: hidden; }
-        .game-container { background: #1e293b; width: 100%; max-width: 750px; border-radius: 40px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; }
-        .screen { display: none; padding: 25px; text-align: center; }
-        .active { display: block; }
-        .lobby-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; text-align: left; margin-top: 10px; }
-        .instr-panel { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 25px; border: 1px solid var(--accent); }
-        .instr-item { margin-bottom: 8px; font-size: 0.75rem; display: flex; gap: 8px; line-height: 1.2; }
-        .instr-num { background: var(--accent); color: #000; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.6rem; }
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .char-card { background: var(--card); padding: 12px; border-radius: 20px; cursor: pointer; border: 3px solid transparent; text-align: center; transition: 0.3s; }
-        .char-card.selected { border-color: var(--accent); background: rgba(0, 210, 211, 0.2); transform: scale(1.05); }
-        .board-track { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); gap: 6px; padding: 20px; background: rgba(0,0,0,0.3); height: 500px; position: relative; }
-        .tile { background: var(--card); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 700; color: #cbd5e1; border: 2px solid transparent; text-align: center; line-height: 1.1; position: relative; word-break: break-all; }
-        .player-piece { position: absolute; font-size: 1.8rem; z-index: 100; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; }
-        .center-space { grid-column: 2 / 6; grid-row: 2 / 6; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 30px; margin: 10px; padding: 15px; border: 1px dashed rgba(255,255,255,0.1); }
-        .dice-wrap { perspective: 1000px; width: 70px; height: 70px; cursor: pointer; margin-bottom: 5px; }
-        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s; }
-        .dice-face { position: absolute; width: 70px; height: 70px; background: white; border: 3px solid #ddd; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: 900; font-size: 2rem; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
-        .f1 { transform: translateZ(35px); } .f2 { transform: rotateY(180deg) translateZ(35px); }
-        .f3 { transform: rotateY(90deg) translateZ(35px); } .f4 { transform: rotateY(-90deg) translateZ(35px); }
-        .f5 { transform: rotateX(90deg) translateZ(35px); } .f6 { transform: rotateX(-90deg) translateZ(35px); }
-        .rolling { animation: multi-spin 0.4s infinite linear; }
-        @keyframes multi-spin { 0% { transform: rotateX(0deg) rotateY(0deg); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
-        .btn { width: 95%; padding: 12px; border: none; border-radius: 20px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 8px; }
-        .btn-chance-big { background: var(--pink); color: #000; border: 2px solid white; font-size: 0.8rem; }
-        .btn-roll-big { background: var(--primary); font-size: 1rem; box-shadow: 0 6px 0 #4834d4; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .card { background: #1e293b; padding: 25px; border-radius: 40px; width: 100%; max-width: 500px; border: 3px solid var(--primary); text-align: center; }
-        .btn-mcq { background: var(--card); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; margin-bottom: 8px; width: 100%; cursor: pointer; text-align: left; font-size: 0.85rem; }
-        .p-stat { text-align: center; padding: 8px; opacity: 0.4; flex: 1; transition: 0.3s; font-size: 0.75rem; }
-        .p-stat.active-turn { opacity: 1; background: rgba(255,255,255,0.1); border-radius: 15px; border: 2px solid var(--primary); }
-        .owner-tag { position: absolute; top: -5px; font-size: 1.2rem; filter: drop-shadow(0 0 3px black); z-index: 10; }
-        .round-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 2rem; display: none; z-index: 3000; border: 4px solid white; box-shadow: 0 0 30px var(--gold); }
-        sub, sup { font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; }
-    </style>
+    :root { 
+        --primary: #6c5ce7; 
+        --accent: #00d2d3; 
+        --bg: #0f172a; 
+        --card: rgba(255, 255, 255, 0.1); 
+        --gold: #feca57; 
+        --pink: #ff9ff3; 
+        --red: #ff7675; 
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 10px; margin: 0; min-height: 100vh; overflow-x: hidden; }
+    .game-container { background: #1e293b; width: 100%; max-width: 750px; border-radius: 40px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; }
+    .screen { display: none; padding: 25px; text-align: center; }
+    .screen.active { display: block; }
+    .lobby-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; text-align: left; margin-top: 10px; }
+    .instr-panel { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 25px; border: 1px solid var(--accent); }
+    .instr-item { margin-bottom: 8px; font-size: 0.75rem; display: flex; gap: 8px; line-height: 1.2; }
+    .instr-num { background: var(--accent); color: #000; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.6rem; }
+    .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .char-card { background: var(--card); padding: 12px; border-radius: 20px; cursor: pointer; border: 3px solid transparent; text-align: center; transition: 0.3s; }
+    .char-card.selected { border-color: var(--accent); background: rgba(0, 210, 211, 0.2); transform: scale(1.05); }
+    .board-track { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); gap: 6px; padding: 20px; background: rgba(0,0,0,0.3); height: 500px; position: relative; }
+    .tile { background: var(--card); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 700; color: #cbd5e1; border: 2px solid transparent; text-align: center; line-height: 1.1; position: relative; word-break: break-all; }
+    .player-piece { position: absolute; font-size: 1.8rem; z-index: 100; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; }
+    .center-space { grid-column: 2 / 6; grid-row: 2 / 6; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 30px; margin: 10px; padding: 15px; border: 1px dashed rgba(255,255,255,0.1); }
+    .dice-wrap { perspective: 1000px; width: 70px; height: 70px; cursor: pointer; margin-bottom: 5px; }
+    .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s; }
+    .dice-face { position: absolute; width: 70px; height: 70px; background: white; border: 3px solid #ddd; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: 900; font-size: 2rem; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
+    .f1 { transform: translateZ(35px); } .f2 { transform: rotateY(180deg) translateZ(35px); }
+    .f3 { transform: rotateY(90deg) translateZ(35px); } .f4 { transform: rotateY(-90deg) translateZ(35px); }
+    .f5 { transform: rotateX(90deg) translateZ(35px); } .f6 { transform: rotateX(-90deg) translateZ(35px); }
+    .rolling { animation: multi-spin 0.4s infinite linear; }
+    @keyframes multi-spin { 0% { transform: rotateX(0deg) rotateY(0deg); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
+    .btn { width: 95%; padding: 12px; border: none; border-radius: 20px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 8px; }
+    .btn-chance-big { background: var(--pink); color: #000; border: 2px solid white; font-size: 0.8rem; }
+    .btn-roll-big { background: var(--primary); font-size: 1rem; box-shadow: 0 6px 0 #4834d4; }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+    .card { background: #1e293b; padding: 25px; border-radius: 40px; width: 100%; max-width: 500px; border: 3px solid var(--primary); text-align: center; }
+    .btn-mcq { background: var(--card); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; margin-bottom: 8px; width: 100%; cursor: pointer; text-align: left; font-size: 0.85rem; }
+    .p-stat { text-align: center; padding: 8px; opacity: 0.4; flex: 1; transition: 0.3s; font-size: 0.75rem; }
+    .p-stat.active-turn { opacity: 1; background: rgba(255,255,255,0.1); border-radius: 15px; border: 2px solid var(--primary); }
+    .owner-tag { position: absolute; top: -5px; font-size: 1.2rem; filter: drop-shadow(0 0 3px black); z-index: 10; }
+    .round-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 2rem; display: none; z-index: 3000; border: 4px solid white; box-shadow: 0 0 30px var(--gold); }
+</style>
 </head>
 <body>
 

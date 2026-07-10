@@ -198,16 +198,19 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
     }
 
 function startGame(){
+    // 1. Prepare player data
     players = chars.filter(c=>c.a).map(c=>({...c, pos:0, pts:30, skip:false, rounds:1}));
     
-    // Change display to block so the browser calculates layout dimensions
-    const gameScreen = document.getElementById('screen-game');
-    document.getElementById('screen-lobby').style.display = 'none';
-    gameScreen.style.display = 'block'; 
+    // 2. FORCE visibility change first
+    const lobby = document.getElementById('screen-lobby');
+    const game = document.getElementById('screen-game');
     
+    lobby.style.display = 'none';
+    game.style.display = 'block'; // Ensure the container exists for the browser
+    
+    // 3. Initialize the board now that the container is visible
     initBoard();
 }
-
     function initBoard(){
     const b = document.getElementById('board');
     // ... (rest of your board generation code remains the same) ...

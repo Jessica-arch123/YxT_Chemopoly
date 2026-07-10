@@ -197,23 +197,21 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         document.getElementById('startBtn').disabled = chars.filter(c=>c.a).length < 1;
     }
 
- function startGame(){
+function startGame(){
     players = chars.filter(c=>c.a).map(c=>({...c, pos:0, pts:30, skip:false, rounds:1}));
     
-    // 1. Unhide the container first
+    // Change display to block so the browser calculates layout dimensions
     const gameScreen = document.getElementById('screen-game');
     document.getElementById('screen-lobby').style.display = 'none';
-    gameScreen.style.display = 'block'; // Ensure it's block so elements have dimensions
-    gameScreen.classList.add('active');
+    gameScreen.style.display = 'block'; 
     
-    // 2. Initialize
     initBoard();
 }
 
     function initBoard(){
-    // ... (rest of your existing code that creates tiles) ...
+    const b = document.getElementById('board');
+    // ... (rest of your board generation code remains the same) ...
 
-    // After tiles are appended:
     const d = document.getElementById('dashboard');
     players.forEach((p, i) => {
         const pc = document.createElement('div'); 
@@ -221,13 +219,12 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         pc.className = 'player-piece'; 
         pc.innerText = p.icon;
         document.getElementById('piecesContainer').appendChild(pc);
-        
-        // ... (rest of dashboard logic) ...
+        // ... (dashboard creation code) ...
     });
 
     updateStatus(); 
     
-    // This delay ensures the CSS Grid has finished layout calculations
+    // Defer the initial positioning by one frame to let CSS Grid render
     requestAnimationFrame(() => {
         updatePieces();
     });

@@ -50,28 +50,29 @@
         <span style="color:var(--accent); font-weight:900;">SESSION SETUP</span>
         <h1 style="margin: 5px 0 15px 0;">CHEMOPOLY</h1>
         <div class="lobby-grid">
-         <div class="instr-panel">
-    <h3 style="color:var(--gold); margin:0 0 10px 0; font-size:1rem;">Game Rules</h3>
-    <div class="instr-item">
-        <div class="instr-num">1</div>
-        <span><b>Setup:</b> Select 1 to 4 players from the cards on the right to start.</span>
-    </div>
-    <div class="instr-item">
-        <div class="instr-num">2</div>
-        <span><b>Victory:</b> Be the first to complete <b>3 full rounds</b> around the board.</span>
-    </div>
-    <div class="instr-item">
-        <div class="instr-num">3</div>
-        <span><b>Points:</b> Correct (+20) | Wrong (-30) | Audit (-20) | Lab Bonus (+40).</span>
-    </div>
-    <div class="instr-item">
-        <div class="instr-num">4</div>
-        <span><b>Sabotage:</b> Spend 50 PTS to skip an opponent's turn or deduct their points.</span>
-    </div>
-    <div class="instr-item">
-        <div class="instr-num">5</div>
-        <span><b>Economy:</b> Earn 50 PTS per GO. You need at least 50 PTS to purchase property.</span>
-    </div>
+            <div class="instr-panel">
+                <h3 style="color:var(--gold); margin:0 0 10px 0; font-size:1rem;">Game Rules</h3>
+                <div class="instr-item">
+                    <div class="instr-num">1</div>
+                    <span><b>Setup:</b> Select 1 to 4 players from the cards on the right to start.</span>
+                </div>
+                <div class="instr-item">
+                    <div class="instr-num">2</div>
+                    <span><b>Victory:</b> Be the first to complete <b>3 full rounds</b> around the board.</span>
+                </div>
+                <div class="instr-item">
+                    <div class="instr-num">3</div>
+                    <span><b>Points:</b> Correct (+20) | Wrong (-30) | Audit (-20) | Lab Bonus (+40).</span>
+                </div>
+                <div class="instr-item">
+                    <div class="instr-num">4</div>
+                    <span><b>Sabotage:</b> Spend 50 PTS to skip an opponent's turn or deduct their points.</span>
+                </div>
+                <div class="instr-item">
+                    <div class="instr-num">5</div>
+                    <span><b>Economy:</b> Earn 50 PTS per GO. You need at least 50 PTS to purchase property.</span>
+                </div>
+            </div>
             <div class="char-selection">
                 <h3 style="margin:0 0 10px 0; font-size:1rem;">Characters</h3>
                 <div class="char-grid">
@@ -108,87 +109,78 @@
 <div class="modal" id="qOverlay" style="display:none;"><div class="card"><h3 id="qHeader">TASK</h3><p id="qText"></p><div id="optionsArea"></div></div></div>
 
 <script>
-
     const questions = [
-    // ANALYTICAL (8)
-    { id:1, mod:"ANALYTICAL", text:"Closeness of a measured value to the true value is:", options:["Precision","Accuracy","Linearity","Selectivity"], correct:"Accuracy", explanation:"Accuracy represents the closeness of a measurement to the true or accepted value.", price:50, rent:20 },
-    { id:2, mod:"ANALYTICAL", text:"Reproducibility of measurements in a series is:", options:["Accuracy","Precision","Sensitivity","Speed"], correct:"Precision", explanation:"Precision measures how consistent repeated results are to each other.", price:50, rent:20 },
-    { id:3, mod:"ANALYTICAL", text:"A primary standard must be:", options:["Hygroscopic","Highly pure and stable","Liquid","Volatile"], correct:"Highly pure and stable", explanation:"Primary standards must be stable and highly pure to ensure accurate concentration calculations.", price:50, rent:20 },
-    { id:4, mod:"ANALYTICAL", text:"Accuracy is usually expressed as:", options:["Standard Deviation","Percent Error","Variance","Range"], correct:"Percent Error", explanation:"Percent error measures the relative difference between the experimental and true value.", price:50, rent:20 },
-    { id:5, mod:"ANALYTICAL", text:"Precision is usually expressed as:", options:["Percent Error","Relative Standard Deviation (RSD)","Mean","Sensitivity"], correct:"Relative Standard Deviation (RSD)", explanation:"RSD represents the spread of data relative to the mean.", price:50, rent:20 },
-    { id:6, mod:"ANALYTICAL", text:"Difference between measured and true value:", options:["Random Error","Systematic Error","Precision","Variance"], correct:"Systematic Error", explanation:"Systematic errors cause consistent bias in a specific direction.", price:60, rent:25 },
-    { id:7, mod:"ANALYTICAL", text:"Error causing data to scatter symmetrically:", options:["Systematic Error","Random Error","Constant Error","Blunder"], correct:"Random Error", explanation:"Random errors are unpredictable and cause data to scatter around the mean.", price:60, rent:25 },
-    { id:8, mod:"ANALYTICAL", text:"Smallest amount an instrument can detect:", options:["Accuracy","Limit of Detection (LOD)","Precision","Sensitivity"], correct:"Limit of Detection (LOD)", explanation:"LOD is the lowest concentration level that can be reliably distinguished from background noise.", price:70, rent:30 },
-
-    // TITRATIONS (8)
-    { id:9, mod:"TITRATIONS", text:"Indicator for Mohr Method for Cl<sup>-</sup>?", options:["Ferric Ion","Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)","Fluorescein","Methyl Red"], correct:"Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)", explanation:"K<sub>2</sub>CrO<sub>4</sub> forms a reddish-brown precipitate with silver ions at the endpoint.", price:80, rent:30 },
-    { id:10, mod:"TITRATIONS", text:"Volhard Method uses which type of titration?", options:["Direct","Back","Complexometric","Redox"], correct:"Back", explanation:"Volhard is a back-titration where excess silver is measured with thiocyanate.", price:100, rent:40 },
-    { id:11, mod:"TITRATIONS", text:"Indicator for EDTA at pH 10?", options:["Murexide","Erio-T","Starch","Litmus"], correct:"Erio-T", explanation:"Erio-T changes color when it releases the metal ion to EDTA at pH 10.", price:80, rent:30 },
-    { id:12, mod:"TITRATIONS", text:"EDTA is a ___ ligand:", options:["Bidentate","Tetradentate","Hexadentate","Monodentate"], correct:"Hexadentate", explanation:"EDTA forms six coordinate bonds with metal ions.", price:80, rent:30 },
-    { id:13, mod:"TITRATIONS", text:"Starch is the indicator for:", options:["KMnO<sub>4</sub>","I<sub>2</sub> (Iodine)","EDTA","AgNO<sub>3</sub>"], correct:"I<sub>2</sub> (Iodine)", explanation:"Starch forms a deep blue complex specifically with triiodide ions.", price:80, rent:30 },
-    { id:14, mod:"TITRATIONS", text:"KMnO<sub>4</sub> titration is:", options:["Self-indicating","Requires Starch","Requires Erio-T","Uses Phenolphthalein"], correct:"Self-indicating", explanation:"Permanganate is intensely purple and acts as its own indicator.", price:80, rent:30 },
-    { id:15, mod:"TITRATIONS", text:"Which is a mandatory requirement for a Primary Standard?", options:["Highly hygroscopic","Highly pure and stable","Low molecular weight","Liquid state"], correct:"Highly pure and stable", explanation:"It must not react with air or moisture to remain consistent for standardization.", price:100, rent:40 },
-    { id:16, mod:"TITRATIONS", text:"Standardizing EDTA usually requires:", options:["NaOH","CaCO<sub>3</sub>","HCl","KMnO<sub>4</sub>"], correct:"CaCO<sub>3</sub>", explanation:"Calcium carbonate is a standard solid used to verify EDTA concentration.", price:100, rent:40 },
-
-    // CONCENTRATIONS (8)
-    { id:17, mod:"CONC.", text:"Definition of Molarity (M)?", options:["Moles/L solution","Moles/kg solvent","Grams/L","Weight %"], correct:"Moles/L solution", explanation:"Molarity is the number of moles of solute dissolved in 1 Liter of solution.", price:80, rent:30 },
-    { id:18, mod:"CONC.", text:"Definition of Molality (m)?", options:["Moles/L solution","Moles/kg solvent","Mole fraction","Grams/mL"], correct:"Moles/kg solvent", explanation:"Molality is the number of moles of solute per kilogram of solvent.", price:80, rent:30 },
-    { id:19, mod:"CONC.", text:"Mole fraction (X<sub>A</sub>) formula is:", options:["n<sub>A</sub> / Total moles","n<sub>A</sub> / kg solvent","Weight / Volume","Density"], correct:"n<sub>A</sub> / Total moles", explanation:"It is the ratio of the moles of one component to the total moles in the mixture.", price:60, rent:20 },
-    { id:20, mod:"CONC.", text:"A 1 ppm solution contains 1mg of solute per ___ of solution:", options:["Liter (L)","Kilogram (kg)","Milliliter (mL)","Gram (g)"], correct:"Liter (L)", explanation:"1 ppm is equivalent to 1 milligram per liter.", price:70, rent:30 },
-    { id:21, mod:"CONC.", text:"Weight/Volume (w/v) concentration is affected by:", options:["Concentration","Temperature","Gravity","Catalyst"], correct:"Temperature", explanation:"Temperature changes liquid volume, which changes the w/v ratio.", price:100, rent:40 },
-    { id:22, mod:"CONC.", text:"Grams of NaOH (MW:40) for 500mL of 0.1M?", options:["1g","2g","4g","0.5g"], correct:"2g", explanation:"0.1 mol/L * 0.5 L * 40 g/mol = 2 grams.", price:100, rent:40 },
-    { id:23, mod:"CONC.", text:"Dilution formula used in labs:", options:["PV=nRT","C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>","pH = -log[H<sup>+</sup>]","n=m/MW"], correct:"C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>", explanation:"This formula balances moles before and after dilution.", price:60, rent:25 },
-    { id:24, mod:"CONC.", text:"Density is defined as:", options:["Mass/Volume","Volume/Mass","Moles/L","Grams/Equivalent"], correct:"Mass/Volume", explanation:"Density describes how much mass occupies a specific volume.", price:50, rent:20 },
-
-    // ACID-BASE (8)
-    { id:25, mod:"ACID-BASE", text:"Henderson-Hasselbalch equation:", options:["pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])","pH = pK<sub>a</sub> - log([A<sup>-</sup>]/[HA])","pH = -log[H<sup>+</sup>]","pK<sub>a</sub> = -log K<sub>a</sub>"], correct:"pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])", explanation:"This equation calculates pH based on the dissociation constant and buffer ratio.", price:100, rent:40 },
-    { id:26, mod:"ACID-BASE", text:"Max buffering capacity occurs when:", options:["pH = 7","pH = pK<sub>a</sub>","pOH = pK<sub>b</sub>","pH = 1"], correct:"pH = pK<sub>a</sub>", explanation:"At pH = pKa, the concentrations of the acid and its conjugate base are equal.", price:100, rent:40 },
-    { id:27, mod:"ACID-BASE", text:"Bronsted-Lowry base is a:", options:["Proton donor","Proton acceptor","Electron donor","Lewis acid"], correct:"Proton acceptor", explanation:"A Bronsted-Lowry base accepts a proton (H+).", price:50, rent:20 },
-    { id:28, mod:"ACID-BASE", text:"Bronsted-Lowry acid is a:", options:["Proton donor","Proton acceptor","Electron donor","Electron acceptor"], correct:"Proton donor", explanation:"A Bronsted-Lowry acid donates a proton (H+).", price:50, rent:20 },
-    { id:29, mod:"ACID-BASE", text:"pH + pOH always equals ___ at 25°C:", options:["7","14","1","10"], correct:"14", explanation:"The sum of pH and pOH is always 14 at standard temperature.", price:60, rent:25 },
-    { id:30, mod:"ACID-BASE", text:"Strong acid example:", options:["CH<sub>3</sub>COOH","HCl","NH<sub>3</sub>","H<sub>2</sub>CO<sub>3</sub>"], correct:"HCl", explanation:"HCl dissociates completely in water.", price:50, rent:20 },
-    { id:31, mod:"ACID-BASE", text:"A buffer consists of a weak acid and its:", options:["Strong base","Conjugate base","Solvent","Indicator"], correct:"Conjugate base", explanation:"Buffers resist pH change using a weak acid and its conjugate base.", price:80, rent:30 },
-    { id:32, mod:"ACID-BASE", text:"K<sub>a</sub> measures the strength of:", options:["Strong bases","Weak acids","Solubility","Ionic bonds"], correct:"Weak acids", explanation:"Ka is the equilibrium constant for the dissociation of weak acids.", price:100, rent:40 },
-
-    // VSEPR (8)
-    { id:33, mod:"VSEPR", text:"Shape of NH<sub>3</sub> according to VSEPR?", options:["Trigonal Planar","Trigonal Pyramidal","Tetrahedral","Bent"], correct:"Trigonal Pyramidal", explanation:"One lone pair pushes the three H atoms into a pyramidal shape.", price:60, rent:20 },
-    { id:34, mod:"VSEPR", text:"Molecular shape of PCl<sub>5</sub>?", options:["Octahedral","Trigonal Bipyramidal","Tetrahedral","Linear"], correct:"Trigonal Bipyramidal", explanation:"Five electron pairs arrange into a trigonal bipyramid.", price:100, rent:40 },
-    { id:35, mod:"VSEPR", text:"Shape of H<sub>2</sub>O according to VSEPR?", options:["Linear","Bent","Tetrahedral","Trigonal Planar"], correct:"Bent", explanation:"Two lone pairs on Oxygen push the H-O-H bonds into a bent shape.", price:60, rent:20 },
-    { id:36, mod:"VSEPR", text:"Shape of CH<sub>4</sub>?", options:["Square Planar","Tetrahedral","Octahedral","Pyramidal"], correct:"Tetrahedral", explanation:"Four bonding pairs arrange at 109.5 degrees to minimize repulsion.", price:80, rent:30 },
-    { id:37, mod:"VSEPR", text:"Bond angle in linear CO<sub>2</sub>?", options:["90°","109.5°","120°","180°"], correct:"180°", explanation:"The central carbon atom is sp-hybridized, resulting in 180 degrees.", price:60, rent:25 },
-    { id:38, mod:"VSEPR", text:"Shape of SF<sub>6</sub>?", options:["Octahedral","Hexagonal","Square Planar","Trigonal Bipyramidal"], correct:"Octahedral", explanation:"Six fluorine atoms are arranged symmetrically around the sulfur atom.", price:100, rent:40 },
-    { id:39, mod:"VSEPR", text:"Bond angle in tetrahedral CH<sub>4</sub>?", options:["180°","120°","109.5°","90°"], correct:"109.5°", explanation:"Tetrahedral geometry results in 109.5 degree angles.", price:80, rent:30 },
-    { id:40, mod:"VSEPR", text:"Shape of BF<sub>3</sub>?", options:["Trigonal Planar","Trigonal Pyramidal","Bent","Linear"], correct:"Trigonal Planar", explanation:"Three bonding pairs arrange in a flat plane at 120 degrees.", price:80, rent:30 },
-
-    // BONDING (8)
-    { id:41, mod:"BONDING", text:"Hybridization of C in Methane (CH<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp<sup>3</sup>", explanation:"Four single bonds require four hybrid sp3 orbitals.", price:60, rent:20 },
-    { id:42, mod:"BONDING", text:"Hybridization of C in Ethene (C<sub>2</sub>H<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","sp<sup>3</sup>d"], correct:"sp<sup>2</sup>", explanation:"Carbon-carbon double bond requires sp2 hybridization.", price:80, rent:30 },
-    { id:43, mod:"BONDING", text:"Bond order for O<sub>2</sub><sup>+</sup> in MO theory?", options:["1.5","2.0","2.5","3.0"], correct:"2.5", explanation:"Removal of an antibonding electron increases bond order to 2.5.", price:100, rent:40 },
-    { id:44, mod:"BONDING", text:"Paramagnetism of Oxygen is explained by:", options:["VSEPR","Valence Bond","Molecular Orbital","Lewis Theory"], correct:"Molecular Orbital", explanation:"MO theory predicts the presence of unpaired electrons in O2.", price:100, rent:40 },
-    { id:45, mod:"BONDING", text:"Bond order for N<sub>2</sub> in MO theory?", options:["1.0","2.0","3.0","2.5"], correct:"3.0", explanation:"N2 contains a triple bond, resulting in a bond order of 3.", price:100, rent:40 },
-    { id:46, mod:"BONDING", text:"Hybridization of C in Ethyne (C<sub>2</sub>H<sub>2</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp", explanation:"A triple bond requires linear geometry and sp hybridization.", price:80, rent:30 },
-    { id:47, mod:"BONDING", text:"A sigma bond (σ) is formed by ___ overlap:", options:["Side-to-side","End-to-end","Parallel","Perpendicular"], correct:"End-to-end", explanation:"Sigma bonds are formed by direct head-on overlap.", price:100, rent:40 },
-    { id:48, mod:"BONDING", text:"A pi bond (π) is formed by ___ overlap:", options:["End-to-end","Side-to-side","Axial","Direct"], correct:"Side-to-side", explanation:"Pi bonds are formed by the parallel overlap of p-orbitals.", price:100, rent:40 },
-
-    // PERIODIC (12)
-    { id:49, mod:"PERIODIC", text:"Who is father of the modern periodic table?", options:["Newlands","Mendeleev","Moseley","Dobereiner"], correct:"Mendeleev", explanation:"Mendeleev arranged elements systematically and predicted undiscovered ones.", price:50, rent:20 },
-    { id:50, mod:"PERIODIC", text:"Basis of Mendeleev’s arrangement?", options:["Atomic #","Atomic mass","Electron config","Valency"], correct:"Atomic mass", explanation:"Mendeleev arranged elements in order of increasing atomic mass.", price:50, rent:20 },
-    { id:51, mod:"PERIODIC", text:"Who proposed the Law of Octaves?", options:["Dobereiner","Mendeleev","Newlands","Moseley"], correct:"Newlands", explanation:"Newlands observed properties repeat every 8th element.", price:50, rent:20 },
-    { id:52, mod:"PERIODIC", text:"Who discovered the concept of triads?", options:["Dobereiner","Dalton","Bohr","Rutherford"], correct:"Dobereiner", explanation:"Dobereiner grouped elements in sets of three with related masses.", price:50, rent:20 },
-    { id:53, mod:"PERIODIC", text:"Which halogen has highest electronegativity?", options:["Cl","Br","F","I"], correct:"F", explanation:"Fluorine is the smallest halogen, pulling electrons strongest.", price:60, rent:25 },
-    { id:54, mod:"PERIODIC", text:"Highest ionization energy element?", options:["Na","Mg","Al","Ar"], correct:"Ar", explanation:"Argon has a stable full shell, resisting electron removal.", price:70, rent:30 },
-    { id:55, mod:"PERIODIC", text:"Largest atomic radius?", options:["Na","Mg","Al","Si"], correct:"Na", explanation:"Atomic radius decreases across Period 3 due to nuclear charge.", price:60, rent:25 },
-    { id:56, mod:"PERIODIC", text:"Lowest electron affinity?", options:["F","Cl","Br","I"], correct:"I", explanation:"Electron affinity decreases as size increases down the group.", price:60, rent:25 },
-    { id:57, mod:"PERIODIC", text:"Strongest metallic character group?", options:["Group 1","Group 2","Group 17","Group 18"], correct:"Group 1", explanation:"Group 1 loses electrons most easily.", price:50, rent:20 },
-    { id:58, mod:"PERIODIC", text:"Lowest ionization energy?", options:["Metals","Non-metals","Noble gases","Halogens"], correct:"Metals", explanation:"Metals lose electrons easily.", price:50, rent:20 },
-    { id:59, mod:"PERIODIC", text:"Greatest shielding effect?", options:["Li","Na","K","Rb"], correct:"Rb", explanation:"Rubidium has more shells, increasing shielding and weakening outer attraction.", price:70, rent:30 },
-    { id:60, mod:"PERIODIC", text:"Increasing atomic radius (Na, Mg, Al):", options:["Al < Mg < Na","Na < Mg < Al","Mg < Al < Na","Al < Na < Mg"], correct:"Al < Mg < Na", explanation:"Radius decreases left-to-right across the period.", price:60, rent:25 }
-];
-   
-const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSEPR", "CONC.", "TITRATIONS", "ACID-BASE", "AUDIT", "ACID-BASE", "TITRATIONS", "LAB BONUS", "ANALYTICAL", "VSEPR", "CONC.", "AUDIT", "CONC.", "BONDING", "ACID-BASE", "BONDING", "VSEPR"];
+        { id:1, mod:"ANALYTICAL", text:"Closeness of a measured value to the true value is:", options:["Precision","Accuracy","Linearity","Selectivity"], correct:"Accuracy", explanation:"Accuracy represents the closeness of a measurement to the true or accepted value.", price:50, rent:20 },
+        { id:2, mod:"ANALYTICAL", text:"Reproducibility of measurements in a series is:", options:["Accuracy","Precision","Sensitivity","Speed"], correct:"Precision", explanation:"Precision measures how consistent repeated results are to each other.", price:50, rent:20 },
+        { id:3, mod:"ANALYTICAL", text:"A primary standard must be:", options:["Hygroscopic","Highly pure and stable","Liquid","Volatile"], correct:"Highly pure and stable", explanation:"Primary standards must be stable and highly pure to ensure accurate concentration calculations.", price:50, rent:20 },
+        { id:4, mod:"ANALYTICAL", text:"Accuracy is usually expressed as:", options:["Standard Deviation","Percent Error","Variance","Range"], correct:"Percent Error", explanation:"Percent error measures the relative difference between the experimental and true value.", price:50, rent:20 },
+        { id:5, mod:"ANALYTICAL", text:"Precision is usually expressed as:", options:["Percent Error","Relative Standard Deviation (RSD)","Mean","Sensitivity"], correct:"Relative Standard Deviation (RSD)", explanation:"RSD represents the spread of data relative to the mean.", price:50, rent:20 },
+        { id:6, mod:"ANALYTICAL", text:"Difference between measured and true value:", options:["Random Error","Systematic Error","Precision","Variance"], correct:"Systematic Error", explanation:"Systematic errors cause consistent bias in a specific direction.", price:60, rent:25 },
+        { id:7, mod:"ANALYTICAL", text:"Error causing data to scatter symmetrically:", options:["Systematic Error","Random Error","Constant Error","Blunder"], correct:"Random Error", explanation:"Random errors are unpredictable and cause data to scatter around the mean.", price:60, rent:25 },
+        { id:8, mod:"ANALYTICAL", text:"Smallest amount an instrument can detect:", options:["Accuracy","Limit of Detection (LOD)","Precision","Sensitivity"], correct:"Limit of Detection (LOD)", explanation:"LOD is the lowest concentration level that can be reliably distinguished from background noise.", price:70, rent:30 },
+        { id:9, mod:"TITRATIONS", text:"Indicator for Mohr Method for Cl<sup>-</sup>?", options:["Ferric Ion","Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)","Fluorescein","Methyl Red"], correct:"Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)", explanation:"K<sub>2</sub>CrO<sub>4</sub> forms a reddish-brown precipitate with silver ions at the endpoint.", price:80, rent:30 },
+        { id:10, mod:"TITRATIONS", text:"Volhard Method uses which type of titration?", options:["Direct","Back","Complexometric","Redox"], correct:"Back", explanation:"Volhard is a back-titration where excess silver is measured with thiocyanate.", price:100, rent:40 },
+        { id:11, mod:"TITRATIONS", text:"Indicator for EDTA at pH 10?", options:["Murexide","Erio-T","Starch","Litmus"], correct:"Erio-T", explanation:"Erio-T changes color when it releases the metal ion to EDTA at pH 10.", price:80, rent:30 },
+        { id:12, mod:"TITRATIONS", text:"EDTA is a ___ ligand:", options:["Bidentate","Tetradentate","Hexadentate","Monodentate"], correct:"Hexadentate", explanation:"EDTA forms six coordinate bonds with metal ions.", price:80, rent:30 },
+        { id:13, mod:"TITRATIONS", text:"Starch is the indicator for:", options:["KMnO<sub>4</sub>","I<sub>2</sub> (Iodine)","EDTA","AgNO<sub>3</sub>"], correct:"I<sub>2</sub> (Iodine)", explanation:"Starch forms a deep blue complex specifically with triiodide ions.", price:80, rent:30 },
+        { id:14, mod:"TITRATIONS", text:"KMnO<sub>4</sub> titration is:", options:["Self-indicating","Requires Starch","Requires Erio-T","Uses Phenolphthalein"], correct:"Self-indicating", explanation:"Permanganate is intensely purple and acts as its own indicator.", price:80, rent:30 },
+        { id:15, mod:"TITRATIONS", text:"Which is a mandatory requirement for a Primary Standard?", options:["Highly hygroscopic","Highly pure and stable","Low molecular weight","Liquid state"], correct:"Highly pure and stable", explanation:"It must not react with air or moisture to remain consistent for standardization.", price:100, rent:40 },
+        { id:16, mod:"TITRATIONS", text:"Standardizing EDTA usually requires:", options:["NaOH","CaCO<sub>3</sub>","HCl","KMnO<sub>4</sub>"], correct:"CaCO<sub>3</sub>", explanation:"Calcium carbonate is a standard solid used to verify EDTA concentration.", price:100, rent:40 },
+        { id:17, mod:"CONC.", text:"Definition of Molarity (M)?", options:["Moles/L solution","Moles/kg solvent","Grams/L","Weight %"], correct:"Moles/L solution", explanation:"Molarity is the number of moles of solute dissolved in 1 Liter of solution.", price:80, rent:30 },
+        { id:18, mod:"CONC.", text:"Definition of Molality (m)?", options:["Moles/L solution","Moles/kg solvent","Mole fraction","Grams/mL"], correct:"Moles/kg solvent", explanation:"Molality is the number of moles of solute per kilogram of solvent.", price:80, rent:30 },
+        { id:19, mod:"CONC.", text:"Mole fraction (X<sub>A</sub>) formula is:", options:["n<sub>A</sub> / Total moles","n<sub>A</sub> / kg solvent","Weight / Volume","Density"], correct:"n<sub>A</sub> / Total moles", explanation:"It is the ratio of the moles of one component to the total moles in the mixture.", price:60, rent:20 },
+        { id:20, mod:"CONC.", text:"A 1 ppm solution contains 1mg of solute per ___ of solution:", options:["Liter (L)","Kilogram (kg)","Milliliter (mL)","Gram (g)"], correct:"Liter (L)", explanation:"1 ppm is equivalent to 1 milligram per liter.", price:70, rent:30 },
+        { id:21, mod:"CONC.", text:"Weight/Volume (w/v) concentration is affected by:", options:["Concentration","Temperature","Gravity","Catalyst"], correct:"Temperature", explanation:"Temperature changes liquid volume, which changes the w/v ratio.", price:100, rent:40 },
+        { id:22, mod:"CONC.", text:"Grams of NaOH (MW:40) for 500mL of 0.1M?", options:["1g","2g","4g","0.5g"], correct:"2g", explanation:"0.1 mol/L * 0.5 L * 40 g/mol = 2 grams.", price:100, rent:40 },
+        { id:23, mod:"CONC.", text:"Dilution formula used in labs:", options:["PV=nRT","C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>","pH = -log[H<sup>+</sup>]","n=m/MW"], correct:"C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>", explanation:"This formula balances moles before and after dilution.", price:60, rent:25 },
+        { id:24, mod:"CONC.", text:"Density is defined as:", options:["Mass/Volume","Volume/Mass","Moles/L","Grams/Equivalent"], correct:"Mass/Volume", explanation:"Density describes how much mass occupies a specific volume.", price:50, rent:20 },
+        { id:25, mod:"ACID-BASE", text:"Henderson-Hasselbalch equation:", options:["pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])","pH = pK<sub>a</sub> - log([A<sup>-</sup>]/[HA])","pH = -log[H<sup>+</sup>]","pK<sub>a</sub> = -log K<sub>a</sub>"], correct:"pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])", explanation:"This equation calculates pH based on the dissociation constant and buffer ratio.", price:100, rent:40 },
+        { id:26, mod:"ACID-BASE", text:"Max buffering capacity occurs when:", options:["pH = 7","pH = pK<sub>a</sub>","pOH = pK<sub>b</sub>","pH = 1"], correct:"pH = pK<sub>a</sub>", explanation:"At pH = pKa, the concentrations of the acid and its conjugate base are equal.", price:100, rent:40 },
+        { id:27, mod:"ACID-BASE", text:"Bronsted-Lowry base is a:", options:["Proton donor","Proton acceptor","Electron donor","Lewis acid"], correct:"Proton acceptor", explanation:"A Bronsted-Lowry base accepts a proton (H+).", price:50, rent:20 },
+        { id:28, mod:"ACID-BASE", text:"Bronsted-Lowry acid is a:", options:["Proton donor","Proton acceptor","Electron donor","Electron acceptor"], correct:"Proton donor", explanation:"A Bronsted-Lowry acid donates a proton (H+).", price:50, rent:20 },
+        { id:29, mod:"ACID-BASE", text:"pH + pOH always equals ___ at 25°C:", options:["7","14","1","10"], correct:"14", explanation:"The sum of pH and pOH is always 14 at standard temperature.", price:60, rent:25 },
+        { id:30, mod:"ACID-BASE", text:"Strong acid example:", options:["CH<sub>3</sub>COOH","HCl","NH<sub>3</sub>","H<sub>2</sub>CO<sub>3</sub>"], correct:"HCl", explanation:"HCl dissociates completely in water.", price:50, rent:20 },
+        { id:31, mod:"ACID-BASE", text:"A buffer consists of a weak acid and its:", options:["Strong base","Conjugate base","Solvent","Indicator"], correct:"Conjugate base", explanation:"Buffers resist pH change using a weak acid and its conjugate base.", price:80, rent:30 },
+        { id:32, mod:"ACID-BASE", text:"K<sub>a</sub> measures the strength of:", options:["Strong bases","Weak acids","Solubility","Ionic bonds"], correct:"Weak acids", explanation:"Ka is the equilibrium constant for the dissociation of weak acids.", price:100, rent:40 },
+        { id:33, mod:"VSEPR", text:"Shape of NH<sub>3</sub> according to VSEPR?", options:["Trigonal Planar","Trigonal Pyramidal","Tetrahedral","Bent"], correct:"Trigonal Pyramidal", explanation:"One lone pair pushes the three H atoms into a pyramidal shape.", price:60, rent:20 },
+        { id:34, mod:"VSEPR", text:"Molecular shape of PCl<sub>5</sub>?", options:["Octahedral","Trigonal Bipyramidal","Tetrahedral","Linear"], correct:"Trigonal Bipyramidal", explanation:"Five electron pairs arrange into a trigonal bipyramid.", price:100, rent:40 },
+        { id:35, mod:"VSEPR", text:"Shape of H<sub>2</sub>O according to VSEPR?", options:["Linear","Bent","Tetrahedral","Trigonal Planar"], correct:"Bent", explanation:"Two lone pairs on Oxygen push the H-O-H bonds into a bent shape.", price:60, rent:20 },
+        { id:36, mod:"VSEPR", text:"Shape of CH<sub>4</sub>?", options:["Square Planar","Tetrahedral","Octahedral","Pyramidal"], correct:"Tetrahedral", explanation:"Four bonding pairs arrange at 109.5 degrees to minimize repulsion.", price:80, rent:30 },
+        { id:37, mod:"VSEPR", text:"Bond angle in linear CO<sub>2</sub>?", options:["90°","109.5°","120°","180°"], correct:"180°", explanation:"The central carbon atom is sp-hybridized, resulting in 180 degrees.", price:60, rent:25 },
+        { id:38, mod:"VSEPR", text:"Shape of SF<sub>6</sub>?", options:["Octahedral","Hexagonal","Square Planar","Trigonal Bipyramidal"], correct:"Octahedral", explanation:"Six fluorine atoms are arranged symmetrically around the sulfur atom.", price:100, rent:40 },
+        { id:39, mod:"VSEPR", text:"Bond angle in tetrahedral CH<sub>4</sub>?", options:["180°","120°","109.5°","90°"], correct:"109.5°", explanation:"Tetrahedral geometry results in 109.5 degree angles.", price:80, rent:30 },
+        { id:40, mod:"VSEPR", text:"Shape of BF<sub>3</sub>?", options:["Trigonal Planar","Trigonal Pyramidal","Bent","Linear"], correct:"Trigonal Planar", explanation:"Three bonding pairs arrange in a flat plane at 120 degrees.", price:80, rent:30 },
+        { id:41, mod:"BONDING", text:"Hybridization of C in Methane (CH<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp<sup>3</sup>", explanation:"Four single bonds require four hybrid sp3 orbitals.", price:60, rent:20 },
+        { id:42, mod:"BONDING", text:"Hybridization of C in Ethene (C<sub>2</sub>H<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","sp<sup>3</sup>d"], correct:"sp<sup>2</sup>", explanation:"Carbon-carbon double bond requires sp2 hybridization.", price:80, rent:30 },
+        { id:43, mod:"BONDING", text:"Bond order for O<sub>2</sub><sup>+</sup> in MO theory?", options:["1.5","2.0","2.5","3.0"], correct:"2.5", explanation:"Removal of an antibonding electron increases bond order to 2.5.", price:100, rent:40 },
+        { id:44, mod:"BONDING", text:"Paramagnetism of Oxygen is explained by:", options:["VSEPR","Valence Bond","Molecular Orbital","Lewis Theory"], correct:"Molecular Orbital", explanation:"MO theory predicts the presence of unpaired electrons in O2.", price:100, rent:40 },
+        { id:45, mod:"BONDING", text:"Bond order for N<sub>2</sub> in MO theory?", options:["1.0","2.0","3.0","2.5"], correct:"3.0", explanation:"N2 contains a triple bond, resulting in a bond order of 3.", price:100, rent:40 },
+        { id:46, mod:"BONDING", text:"Hybridization of C in Ethyne (C<sub>2</sub>H<sub>2</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp", explanation:"A triple bond requires linear geometry and sp hybridization.", price:80, rent:30 },
+        { id:47, mod:"BONDING", text:"A sigma bond (σ) is formed by ___ overlap:", options:["Side-to-side","End-to-end","Parallel","Perpendicular"], correct:"End-to-end", explanation:"Sigma bonds are formed by direct head-on overlap.", price:100, rent:40 },
+        { id:48, mod:"BONDING", text:"A pi bond (π) is formed by ___ overlap:", options:["End-to-end","Side-to-side","Axial","Direct"], correct:"Side-to-side", explanation:"Pi bonds are formed by the parallel overlap of p-orbitals.", price:100, rent:40 },
+        { id:49, mod:"PERIODIC", text:"Who is father of the modern periodic table?", options:["Newlands","Mendeleev","Moseley","Dobereiner"], correct:"Mendeleev", explanation:"Mendeleev arranged elements systematically and predicted undiscovered ones.", price:50, rent:20 },
+        { id:50, mod:"PERIODIC", text:"Basis of Mendeleev’s arrangement?", options:["Atomic #","Atomic mass","Electron config","Valency"], correct:"Atomic mass", explanation:"Mendeleev arranged elements in order of increasing atomic mass.", price:50, rent:20 },
+        { id:51, mod:"PERIODIC", text:"Who proposed the Law of Octaves?", options:["Dobereiner","Mendeleev","Newlands","Moseley"], correct:"Newlands", explanation:"Newlands observed properties repeat every 8th element.", price:50, rent:20 },
+        { id:52, mod:"PERIODIC", text:"Who discovered the concept of triads?", options:["Dobereiner","Dalton","Bohr","Rutherford"], correct:"Dobereiner", explanation:"Dobereiner grouped elements in sets of three with related masses.", price:50, rent:20 },
+        { id:53, mod:"PERIODIC", text:"Which halogen has highest electronegativity?", options:["Cl","Br","F","I"], correct:"F", explanation:"Fluorine is the smallest halogen, pulling electrons strongest.", price:60, rent:25 },
+        { id:54, mod:"PERIODIC", text:"Highest ionization energy element?", options:["Na","Mg","Al","Ar"], correct:"Ar", explanation:"Argon has a stable full shell, resisting electron removal.", price:70, rent:30 },
+        { id:55, mod:"PERIODIC", text:"Largest atomic radius?", options:["Na","Mg","Al","Si"], correct:"Na", explanation:"Atomic radius decreases across Period 3 due to nuclear charge.", price:60, rent:25 },
+        { id:56, mod:"PERIODIC", text:"Lowest electron affinity?", options:["F","Cl","Br","I"], correct:"I", explanation:"Electron affinity decreases as size increases down the group.", price:60, rent:25 },
+        { id:57, mod:"PERIODIC", text:"Strongest metallic character group?", options:["Group 1","Group 2","Group 17","Group 18"], correct:"Group 1", explanation:"Group 1 loses electrons most easily.", price:50, rent:20 },
+        { id:58, mod:"PERIODIC", text:"Lowest ionization energy?", options:["Metals","Non-metals","Noble gases","Halogens"], correct:"Metals", explanation:"Metals lose electrons easily.", price:50, rent:20 },
+        { id:59, mod:"PERIODIC", text:"Greatest shielding effect?", options:["Li","Na","K","Rb"], correct:"Rb", explanation:"Rubidium has more shells, increasing shielding and weakening outer attraction.", price:70, rent:30 },
+        { id:60, mod:"PERIODIC", text:"Increasing atomic radius (Na, Mg, Al):", options:["Al < Mg < Na","Na < Mg < Al","Mg < Al < Na","Al < Na < Mg"], correct:"Al < Mg < Na", explanation:"Radius decreases left-to-right across the period.", price:60, rent:25 }
+    ];
+       
+    const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSEPR", "CONC.", "TITRATIONS", "ACID-BASE", "AUDIT", "ACID-BASE", "TITRATIONS", "LAB BONUS", "ANALYTICAL", "VSEPR", "CONC.", "AUDIT", "CONC.", "BONDING", "ACID-BASE", "BONDING", "VSEPR"];
     const ownerCols = ["#6c5ce7", "#00d2d3", "#e67e22", "#ff9ff3"];
     let players = [], turn = 0, rolling = false, owners = {}, chars = [{id:0, icon:'🐱', n:'CAT-ALYST', a:false},{id:1, icon:'🐶', n:'DOG-MA', a:false},{id:2, icon:'🦊', n:'FOX-PHATE', a:false},{id:3, icon:'🐰', n:'BUN-SEN', a:false}];
     let usedQsGlobal = [];
+
+    // Safe dummy sound/effect handler
+    function play(type) {
+        console.log("Audio trigger:", type);
+    }
 
     function togglePlayer(id){
         chars[id].a = !chars[id].a;
@@ -197,41 +189,76 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
         document.getElementById('startBtn').disabled = chars.filter(c=>c.a).length < 1;
     }
 
-function startGame(){
-    // 1. Prepare player data
-    players = chars.filter(c=>c.a).map(c=>({...c, pos:0, pts:30, skip:false, rounds:1}));
-    
-    // 2. FORCE visibility change first
-    const lobby = document.getElementById('screen-lobby');
-    const game = document.getElementById('screen-game');
-    
-    lobby.style.display = 'none';
-    game.style.display = 'block'; // Ensure the container exists for the browser
-    
-    // 3. Initialize the board now that the container is visible
-    initBoard();
-}
+    function startGame(){
+        players = chars.filter(c=>c.a).map(c=>({...c, pos:0, pts:30, skip:false, rounds:1}));
+        
+        const lobby = document.getElementById('screen-lobby');
+        const game = document.getElementById('screen-game');
+        
+        lobby.style.display = 'none';
+        game.style.display = 'block'; 
+        
+        initBoard();
+    }
+
     function initBoard(){
-    const b = document.getElementById('board');
-    // ... (rest of your board generation code remains the same) ...
+        const b = document.getElementById('board');
+        
+        // Remove structural tiles from previous games if any
+        const oldTiles = b.querySelectorAll('.tile');
+        oldTiles.forEach(t => t.remove());
 
-    const d = document.getElementById('dashboard');
-    players.forEach((p, i) => {
-        const pc = document.createElement('div'); 
-        pc.id = 'piece'+p.id; 
-        pc.className = 'player-piece'; 
-        pc.innerText = p.icon;
-        document.getElementById('piecesContainer').appendChild(pc);
-        // ... (dashboard creation code) ...
-    });
+        // Programmatically draw the 22 layout perimeter board spaces
+        tileNames.forEach((name, i) => {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.id = 't' + i;
+            tile.innerHTML = `<div>${name}</div><div style="font-size:0.6rem;opacity:0.5;">#${i}</div>`;
+            
+            // Grid positions mapping out a 6x6 square border track
+            let row, col;
+            if (i <= 5) { row = 1; col = i + 1; }
+            else if (i <= 10) { row = i - 4; col = 6; }
+            else if (i <= 15) { row = 6; col = 17 - i; }
+            else { row = 22 - i; col = 1; }
+            
+            tile.style.gridRow = row;
+            tile.style.gridColumn = col;
+            b.appendChild(tile);
+        });
 
-    updateStatus(); 
-    
-    // Defer the initial positioning by one frame to let CSS Grid render
-    requestAnimationFrame(() => {
-        updatePieces();
-    });
-}
+        // Initialize players visual pieces container
+        const piecesContainer = document.getElementById('piecesContainer');
+        piecesContainer.innerHTML = '';
+
+        // Dynamically build bottom scorecard layout matching active players
+        const d = document.getElementById('dashboard');
+        d.innerHTML = '';
+
+        players.forEach((p, i) => {
+            const pc = document.createElement('div'); 
+            pc.id = 'piece' + p.id; 
+            pc.className = 'player-piece'; 
+            pc.innerText = p.icon;
+            piecesContainer.appendChild(pc);
+
+            const scoreCard = document.createElement('div');
+            scoreCard.id = 'stat' + i;
+            scoreCard.className = `p-stat ${i === 0 ? 'active-turn' : ''}`;
+            scoreCard.innerHTML = `
+                <div style="font-size:1.2rem;">${p.icon}</div>
+                <div><b>${p.n}</b></div>
+                <div>PTS: <span id="pts${i}">${p.pts}</span></div>
+            `;
+            d.appendChild(scoreCard);
+        });
+
+        updateStatus(); 
+        
+        requestAnimationFrame(() => {
+            updatePieces();
+        });
+    }
 
     function rollDice(){
         if(rolling) return;
@@ -326,7 +353,6 @@ function startGame(){
             play('correct');
             p.pts += 20;
             updateStats();
-            // Pass price correctly here
             if (owners[tid] === undefined && p.pts >= price) {
                 showBuyMenu(tid, p, price);
             } else {
@@ -381,19 +407,26 @@ function startGame(){
         document.getElementById('qText').innerText = "Spend 50 PTS to target an opponent:";
         area.innerHTML = '';
 
-        // Create a button for each opponent
         players.forEach((target, i) => {
-            if (i !== turn) { // Cannot target yourself
+            if (i !== turn) { 
                 const b = document.createElement('button');
                 b.className = 'btn-mcq';
                 b.innerHTML = `Target ${target.icon}`;
                 b.onclick = () => {
-                    // Show second menu: Choose Effect
                     showSabotageOptions(target, p);
                 };
                 area.appendChild(b);
             }
         });
+
+        // Add an escape action to prevent interface lock up
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn';
+        cancelBtn.style.background = '#4b5563';
+        cancelBtn.innerText = "BACK TO GAME";
+        cancelBtn.onclick = () => { document.getElementById('qOverlay').style.display = 'none'; };
+        area.appendChild(cancelBtn);
+
         document.getElementById('qOverlay').style.display = 'flex';
     }
 
@@ -428,25 +461,39 @@ function startGame(){
         alert(msg);
         updateStats();
     }
+    
     function endTurn(){
         document.getElementById('qOverlay').style.display = 'none';
-        updateStats(); document.getElementById('stat'+turn).classList.remove('active-turn');
+        updateStats(); 
+        document.getElementById('stat'+turn).classList.remove('active-turn');
         turn = (turn+1)%players.length;
         document.getElementById('stat'+turn).classList.add('active-turn');
         updateStatus();
     }
 
-    function updateStats(){ players.forEach((p,i)=>document.getElementById('pts'+i).innerText = p.pts); }
-    function updateStatus(){ document.getElementById('statusLabel').innerText = players[turn].icon + "'S TURN"; }
+    function updateStats(){ 
+        players.forEach((p,i)=> {
+            const val = document.getElementById('pts'+i);
+            if(val) val.innerText = p.pts;
+        }); 
+    }
+    
+    function updateStatus(){ 
+        document.getElementById('statusLabel').innerText = players[turn].icon + "'S TURN"; 
+    }
+    
     function updatePieces(){
         players.forEach((p, i) => {
-            const t = document.getElementById('t'+p.pos); const pc = document.getElementById('piece'+p.id);
-            if(t && pc){ pc.style.left = (t.offsetLeft + (i%2)*10 + 2)+'px'; pc.style.top = (t.offsetTop + Math.floor(i/2)*10 + 2)+'px'; }
+            const t = document.getElementById('t'+p.pos); 
+            const pc = document.getElementById('piece'+p.id);
+            if(t && pc){ 
+                pc.style.left = (t.offsetLeft + (i%2)*10 + 2)+'px'; 
+                pc.style.top = (t.offsetTop + Math.floor(i/2)*10 + 2)+'px'; 
+            }
         });
     }
 
-        function checkEndGame(winner) {
-        // 'winner' is now passed directly from movePlayer
+    function checkEndGame(winner) {
         alert(`GAME OVER! ${winner.icon} is the winner with ${winner.pts} PTS!`);
         location.reload();
     }

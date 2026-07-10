@@ -246,18 +246,26 @@ const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSE
     }
 
     function movePlayer(s){
-        let p = players[turn]; let old = p.pos; p.pos = (p.pos + s) % 22;
+        let p = players[turn]; 
+        let old = p.pos; 
+        p.pos = (p.pos + s) % 22;
+
         if(p.pos < old) { 
-            p.pts += 50; p.rounds++;
+            p.pts += 50; 
+            p.rounds++;
             document.getElementById('roundAlert').style.display='block'; 
             setTimeout(()=>document.getElementById('roundAlert').style.display='none', 1500); 
+            
             if(p.rounds > 3) {
-        checkEndGame(p); // Pass the winning player object 'p'
-        return;
-        }
-        updatePieces(); setTimeout(()=>handleLanding(p), 600);
-    }
-
+                checkEndGame(p); 
+                return;
+            }
+        } 
+        
+        updatePieces(); 
+        setTimeout(()=>handleLanding(p), 600);
+    } 
+    
     function handleLanding(p){
         if(p.pos === 0) { endTurn(); return; }
         if(tileNames[p.pos] === "LAB BONUS") { p.pts += 40; alert("LAB BONUS! +40 PTS"); endTurn(); return; }

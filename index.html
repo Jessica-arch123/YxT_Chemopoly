@@ -485,12 +485,12 @@
 
         const backBtn = document.createElement('button');
         backBtn.className = 'btn-mcq';
-        backBtn.innerHTML = "Backward two steps";
+        backBtn.innerHTML = "Backward ONE step";
         backBtn.onclick = () => {
             attacker.pts -= 50;
-            target.pos = (target.pos - 2 + 20) % 20;
+            target.pos = (target.pos - 1 + 20) % 20;
             updatePieces();
-            closeSabotage(`Sabotage! ${target.icon} was pushed backward two steps.`);
+            closeSabotage(`Sabotage! ${target.icon} was pushed backward one step.`);
         };
         area.appendChild(backBtn);
     }

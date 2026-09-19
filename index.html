@@ -66,7 +66,7 @@
                 </div>
                 <div class="instr-item">
                     <div class="instr-num">4</div>
-                    <span><b>Sabotage:</b> Spend 50 PTS to skip an opponent's turn or deduct their points.</span>
+                    <span><b>Sabotage:</b> Spend 50 PTS to skip turns, deduct points, or push opponents backward!</span>
                 </div>
                 <div class="instr-item">
                     <div class="instr-num">5</div>
@@ -298,7 +298,7 @@
         const r = Math.floor(Math.random()*6)+1;
         setTimeout(()=>{
             dice.classList.remove('rolling');
-            const rots = { 1: "rotateX(0deg) rotateY(0deg)", 2: "rotateY(180deg)", 3: "rotateY(-90deg)", 4: "rotateY(90deg)", 5: "rotateX(-90deg)", 6: "rotateX(90deg)" };
+            const rots = { 1: "rotateX(0deg) rotateY(0deg)", 2: "rotateY(180deg)", 3: "rotateY(-90deg)", 4: "rotateY(90deg)", 5: "rotateX(-90deg)", 6: "rotateX(-90deg)" };
             dice.style.transform = rots[r];
             setTimeout(()=>{ movePlayer(r); rolling=false; }, 600);
         }, 1000);
@@ -482,6 +482,17 @@
             closeSabotage(`Sabotage! You deducted 20 PTS from ${target.icon}.`);
         };
         area.appendChild(deductBtn);
+
+        const backBtn = document.createElement('button');
+        backBtn.className = 'btn-mcq';
+        backBtn.innerHTML = "Backward two steps";
+        backBtn.onclick = () => {
+            attacker.pts -= 50;
+            target.pos = (target.pos - 2 + 20) % 20;
+            updatePieces();
+            closeSabotage(`Sabotage! ${target.icon} was pushed backward two steps.`);
+        };
+        area.appendChild(backBtn);
     }
 
     function closeSabotage(msg) {

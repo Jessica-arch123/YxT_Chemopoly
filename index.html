@@ -1,124 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHEMOPOLY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #6c5ce7; --accent: #00d2d3; --bg: #0f172a; --card: rgba(255, 255, 255, 0.1); --gold: #feca57; --pink: #ff9ff3; --red: #ff7675; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 10px; margin: 0; min-height: 100vh; overflow-x: hidden; }
-        .game-container { background: #1e293b; width: 100%; max-width: 750px; border-radius: 40px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); position: relative; }
-        .screen { display: none; padding: 25px; text-align: center; }
-        .active { display: block; }
-        .lobby-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; text-align: left; margin-top: 10px; }
-        .instr-panel { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 25px; border: 1px solid var(--accent); }
-        .instr-item { margin-bottom: 8px; font-size: 0.75rem; display: flex; gap: 8px; line-height: 1.2; }
-        .instr-num { background: var(--accent); color: #000; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.6rem; }
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .char-card { background: var(--card); padding: 12px; border-radius: 20px; cursor: pointer; border: 3px solid transparent; text-align: center; transition: 0.3s; }
-        .char-card.selected { border-color: var(--accent); background: rgba(0, 210, 211, 0.2); transform: scale(1.05); }
-        .board-track { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); gap: 6px; padding: 20px; background: rgba(0,0,0,0.3); height: 500px; position: relative; }
-        .tile { background: var(--card); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.45rem; font-weight: 700; color: #cbd5e1; border: 2px solid transparent; text-align: center; line-height: 1.1; padding: 2px; position: relative; word-break: break-word; overflow: hidden; }
-        .player-piece { position: absolute; font-size: 1.8rem; z-index: 100; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; }
-        .center-space { grid-column: 2 / 6; grid-row: 2 / 6; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 30px; margin: 10px; padding: 15px; border: 1px dashed rgba(255,255,255,0.1); }
-        .dice-wrap { perspective: 1000px; width: 70px; height: 70px; cursor: pointer; margin-bottom: 5px; }
-        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s; }
-        .dice-face { position: absolute; width: 70px; height: 70px; background: white; border: 3px solid #ddd; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: 900; font-size: 2rem; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
-        .f1 { transform: translateZ(35px); } .f2 { transform: rotateY(180deg) translateZ(35px); }
-        .f3 { transform: rotateY(90deg) translateZ(35px); } .f4 { transform: rotateY(-90deg) translateZ(35px); }
-        .f5 { transform: rotateX(90deg) translateZ(35px); } .f6 { transform: rotateX(-90deg) translateZ(35px); }
-        .rolling { animation: multi-spin 0.4s infinite linear; }
-        @keyframes multi-spin { 0% { transform: rotateX(0deg) rotateY(0deg); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
-        .btn { width: 95%; padding: 12px; border: none; border-radius: 20px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 8px; }
-        .btn-chance-big { background: var(--pink); color: #000; border: 2px solid white; font-size: 0.75rem; }
-        .btn-roll-big { background: var(--primary); font-size: 1rem; box-shadow: 0 6px 0 #4834d4; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .card { background: #1e293b; padding: 25px; border-radius: 40px; width: 100%; max-width: 500px; border: 3px solid var(--primary); text-align: center; }
-        .btn-mcq { background: var(--card); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; margin-bottom: 8px; width: 100%; cursor: pointer; text-align: left; font-size: 0.85rem; }
-        .p-stat { text-align: center; padding: 8px; opacity: 0.4; flex: 1; transition: 0.3s; font-size: 0.75rem; }
-        .p-stat.active-turn { opacity: 1; background: rgba(255,255,255,0.1); border-radius: 15px; border: 2px solid var(--primary); }
-        .owner-tag { position: absolute; top: -5px; font-size: 1.2rem; filter: drop-shadow(0 0 3px black); z-index: 10; }
-        .round-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 2rem; display: none; z-index: 3000; border: 4px solid white; box-shadow: 0 0 30px var(--gold); }
-        sub, sup { font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; }
-    </style>
-</head>
-<body>
-
-<div class="game-container">
-    <div id="screen-lobby" class="screen active">
-        <span style="color:var(--accent); font-weight:900;">SESSION SETUP</span>
-        <h1 style="margin: 5px 0 15px 0;">CHEMOPOLY</h1>
-        <div class="lobby-grid">
-            <div class="instr-panel">
-                <h3 style="color:var(--gold); margin:0 0 10px 0; font-size:1rem;">Game Rules</h3>
-                <div class="instr-item">
-                    <div class="instr-num">1</div>
-                    <span><b>Setup:</b> Select 1 to 4 players from the cards on the right to start.</span>
-                </div>
-                <div class="instr-item">
-                    <div class="instr-num">2</div>
-                    <span><b>Victory:</b> Be the first to complete <b>3 full rounds</b> around the board.</span>
-                </div>
-                <div class="instr-item">
-                    <div class="instr-num">3</div>
-                    <span><b>Points:</b> Correct (+20) | Wrong (-30) | Audit (-20) | Lab Bonus (+40).</span>
-                </div>
-                <div class="instr-item">
-                    <div class="instr-num">4</div>
-                    <span><b>Sabotage:</b> Spend 50 PTS to skip turns, deduct points, or push opponents backward!</span>
-                </div>
-                <div class="instr-item">
-                    <div class="instr-num">5</div>
-                    <span><b>Economy:</b> Earn 50 PTS per GO/END. You need at least 50 PTS to purchase property.</span>
-                </div>
-            </div>
-            <div class="char-selection">
-                <h3 style="margin:0 0 10px 0; font-size:1rem;">Characters</h3>
-                <div class="char-grid">
-                    <div id="card0" onclick="togglePlayer(0)" class="char-card"><span>🐱</span><br><small id="n0">CAT-ALYST</small></div>
-                    <div id="card1" onclick="togglePlayer(1)" class="char-card"><span>🐶</span><br><small id="n1">DOG-MA</small></div>
-                    <div id="card2" onclick="togglePlayer(2)" class="char-card"><span>🦊</span><br><small id="n2">FOX-PHATE</small></div>
-                    <div id="card3" onclick="togglePlayer(3)" class="char-card"><span>🐰</span><br><small id="n3">BUN-SEN</small></div>
-                </div>
-                <button class="btn" style="background:var(--accent); color:#000;" id="startBtn" disabled onclick="startGame()">START GAME</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="screen-game" class="screen" style="padding:0;">
-        <div id="roundAlert" class="round-popup">+50 PTS! 🧪</div>
-        <div class="board-track" id="board">
-            <div class="center-space">
-                <h4 id="statusLabel" style="color:var(--accent); margin-bottom:5px; font-size:0.9rem;">READY</h4>
-                <div class="dice-wrap" onclick="rollDice()">
-                    <div id="dice" class="dice">
-                        <div class="dice-face f1">1</div><div class="dice-face f2">2</div><div class="dice-face f3">3</div>
-                        <div class="dice-face f4">4</div><div class="dice-face f5">5</div><div class="dice-face f6">6</div>
-                    </div>
-                </div>
-                <button id="rollBtn" class="btn btn-roll-big" onclick="rollDice()">ROLL</button>
-                <button class="btn btn-chance-big" onclick="buySabotage()">BUY CHANCE (50 POINTS)</button>
-            </div>
-            <div id="piecesContainer"></div>
-        </div>
-        <div id="dashboard" style="display:flex; background:rgba(0,0,0,0.5); padding:10px; justify-content:space-around;"></div>
-    </div>
-</div>
-
-<div class="modal" id="qOverlay" style="display:none;"><div class="card"><h3 id="qHeader">TASK</h3><p id="qText"></p><div id="optionsArea"></div></div></div>
-
-<!-- End Game Modal -->
-<div class="modal" id="endGameModal" style="display:none;">
-    <div class="card" style="border-color: var(--gold);">
-        <h2 style="color: var(--gold); margin-top: 0;">🏆 GAME CONCLUDED 🏆</h2>
-        <div id="endGameContent" style="margin: 15px 0; text-align: left;"></div>
-        <button class="btn" style="background: var(--accent); color: #000;" onclick="location.reload()">PLAY AGAIN</button>
-    </div>
-</div>
-
 <script>
+    const sounds = { roll: new Audio('https://www.soundjay.com/buttons/button-27.mp3'), correct: new Audio('https://www.soundjay.com/buttons/button-3.mp3'), wrong: new Audio('https://www.soundjay.com/buttons/button-10.mp3') };
+    function play(t){ sounds[t].currentTime=0; sounds[t].play().catch(()=>{}); }
+
     const questions = [
+        // ANALYTICAL (8)
         { id:1, mod:"ANALYTICAL", text:"Closeness of a measured value to the true value is:", options:["Precision","Accuracy","Linearity","Selectivity"], correct:"Accuracy", explanation:"Accuracy represents the closeness of a measurement to the true or accepted value.", price:50, rent:20 },
         { id:2, mod:"ANALYTICAL", text:"Reproducibility of measurements in a series is:", options:["Accuracy","Precision","Sensitivity","Speed"], correct:"Precision", explanation:"Precision measures how consistent repeated results are to each other.", price:50, rent:20 },
         { id:3, mod:"ANALYTICAL", text:"A primary standard must be:", options:["Hygroscopic","Highly pure and stable","Liquid","Volatile"], correct:"Highly pure and stable", explanation:"Primary standards must be stable and highly pure to ensure accurate concentration calculations.", price:50, rent:20 },
@@ -127,14 +12,18 @@
         { id:6, mod:"ANALYTICAL", text:"Difference between measured and true value:", options:["Random Error","Systematic Error","Precision","Variance"], correct:"Systematic Error", explanation:"Systematic errors cause consistent bias in a specific direction.", price:60, rent:25 },
         { id:7, mod:"ANALYTICAL", text:"Error causing data to scatter symmetrically:", options:["Systematic Error","Random Error","Constant Error","Blunder"], correct:"Random Error", explanation:"Random errors are unpredictable and cause data to scatter around the mean.", price:60, rent:25 },
         { id:8, mod:"ANALYTICAL", text:"Smallest amount an instrument can detect:", options:["Accuracy","Limit of Detection (LOD)","Precision","Sensitivity"], correct:"Limit of Detection (LOD)", explanation:"LOD is the lowest concentration level that can be reliably distinguished from background noise.", price:70, rent:30 },
-        { id:9, mod:"ACID-BASE", text:"Indicator for Mohr Method for Cl<sup>-</sup>?", options:["Ferric Ion","Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)","Fluorescein","Methyl Red"], correct:"Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)", explanation:"K<sub>2</sub>CrO<sub>4</sub> forms a reddish-brown precipitate with silver ions at the endpoint.", price:80, rent:30 },
-        { id:10, mod:"ACID-BASE", text:"Volhard Method uses which type of titration?", options:["Direct","Back","Complexometric","Redox"], correct:"Back", explanation:"Volhard is a back-titration where excess silver is measured with thiocyanate.", price:100, rent:40 },
-        { id:11, mod:"ACID-BASE", text:"Indicator for EDTA at pH 10?", options:["Murexide","Erio-T","Starch","Litmus"], correct:"Erio-T", explanation:"Erio-T changes color when it releases the metal ion to EDTA at pH 10.", price:80, rent:30 },
-        { id:12, mod:"ACID-BASE", text:"EDTA is a ___ ligand:", options:["Bidentate","Tetradentate","Hexadentate","Monodentate"], correct:"Hexadentate", explanation:"EDTA forms six coordinate bonds with metal ions.", price:80, rent:30 },
-        { id:13, mod:"ACID-BASE", text:"Starch is the indicator for:", options:["KMnO<sub>4</sub>","I<sub>2</sub> (Iodine)","EDTA","AgNO<sub>3</sub>"], correct:"I<sub>2</sub> (Iodine)", explanation:"Starch forms a deep blue complex specifically with triiodide ions.", price:80, rent:30 },
-        { id:14, mod:"ACID-BASE", text:"KMnO<sub>4</sub> titration is:", options:["Self-indicating","Requires Starch","Requires Erio-T","Uses Phenolphthalein"], correct:"Self-indicating", explanation:"Permanganate is intensely purple and acts as its own indicator.", price:80, rent:30 },
-        { id:15, mod:"ACID-BASE", text:"Which is a mandatory requirement for a Primary Standard?", options:["Highly hygroscopic","Highly pure and stable","Low molecular weight","Liquid state"], correct:"Highly pure and stable", explanation:"It must not react with air or moisture to remain consistent for standardization.", price:100, rent:40 },
-        { id:16, mod:"ACID-BASE", text:"Standardizing EDTA usually requires:", options:["NaOH","CaCO<sub>3</sub>","HCl","KMnO<sub>4</sub>"], correct:"CaCO<sub>3</sub>", explanation:"Calcium carbonate is a standard solid used to verify EDTA concentration.", price:100, rent:40 },
+
+        // TITRATIONS (8)
+        { id:9, mod:"TITRATIONS", text:"Indicator for Mohr Method for Cl<sup>-</sup>?", options:["Ferric Ion","Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)","Fluorescein","Methyl Red"], correct:"Potassium Chromate (K<sub>2</sub>CrO<sub>4</sub>)", explanation:"K<sub>2</sub>CrO<sub>4</sub> forms a reddish-brown precipitate with silver ions at the endpoint.", price:80, rent:30 },
+        { id:10, mod:"TITRATIONS", text:"Volhard Method uses which type of titration?", options:["Direct","Back","Complexometric","Redox"], correct:"Back", explanation:"Volhard is a back-titration where excess silver is measured with thiocyanate.", price:100, rent:40 },
+        { id:11, mod:"TITRATIONS", text:"Indicator for EDTA at pH 10?", options:["Murexide","Erio-T","Starch","Litmus"], correct:"Erio-T", explanation:"Erio-T changes color when it releases the metal ion to EDTA at pH 10.", price:80, rent:30 },
+        { id:12, mod:"TITRATIONS", text:"EDTA is a ___ ligand:", options:["Bidentate","Tetradentate","Hexadentate","Monodentate"], correct:"Hexadentate", explanation:"EDTA forms six coordinate bonds with metal ions.", price:80, rent:30 },
+        { id:13, mod:"TITRATIONS", text:"Starch is the indicator for:", options:["KMnO<sub>4</sub>","I<sub>2</sub> (Iodine)","EDTA","AgNO<sub>3</sub>"], correct:"I<sub>2</sub> (Iodine)", explanation:"Starch forms a deep blue complex specifically with triiodide ions.", price:80, rent:30 },
+        { id:14, mod:"TITRATIONS", text:"KMnO<sub>4</sub> titration is:", options:["Self-indicating","Requires Starch","Requires Erio-T","Uses Phenolphthalein"], correct:"Self-indicating", explanation:"Permanganate is intensely purple and acts as its own indicator.", price:80, rent:30 },
+        { id:15, mod:"TITRATIONS", text:"Which is a mandatory requirement for a Primary Standard?", options:["Highly hygroscopic","Highly pure and stable","Low molecular weight","Liquid state"], correct:"Highly pure and stable", explanation:"It must not react with air or moisture to remain consistent for standardization.", price:100, rent:40 },
+        { id:16, mod:"TITRATIONS", text:"Standardizing EDTA usually requires:", options:["NaOH","CaCO<sub>3</sub>","HCl","KMnO<sub>4</sub>"], correct:"CaCO<sub>3</sub>", explanation:"Calcium carbonate is a standard solid used to verify EDTA concentration.", price:100, rent:40 },
+
+        // CONCENTRATIONS (8)
         { id:17, mod:"CONC.", text:"Definition of Molarity (M)?", options:["Moles/L solution","Moles/kg solvent","Grams/L","Weight %"], correct:"Moles/L solution", explanation:"Molarity is the number of moles of solute dissolved in 1 Liter of solution.", price:80, rent:30 },
         { id:18, mod:"CONC.", text:"Definition of Molality (m)?", options:["Moles/L solution","Moles/kg solvent","Mole fraction","Grams/mL"], correct:"Moles/kg solvent", explanation:"Molality is the number of moles of solute per kilogram of solvent.", price:80, rent:30 },
         { id:19, mod:"CONC.", text:"Mole fraction (X<sub>A</sub>) formula is:", options:["n<sub>A</sub> / Total moles","n<sub>A</sub> / kg solvent","Weight / Volume","Density"], correct:"n<sub>A</sub> / Total moles", explanation:"It is the ratio of the moles of one component to the total moles in the mixture.", price:60, rent:20 },
@@ -143,6 +32,8 @@
         { id:22, mod:"CONC.", text:"Grams of NaOH (MW:40) for 500mL of 0.1M?", options:["1g","2g","4g","0.5g"], correct:"2g", explanation:"0.1 mol/L * 0.5 L * 40 g/mol = 2 grams.", price:100, rent:40 },
         { id:23, mod:"CONC.", text:"Dilution formula used in labs:", options:["PV=nRT","C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>","pH = -log[H<sup>+</sup>]","n=m/MW"], correct:"C<sub>1</sub>V<sub>1</sub> = C<sub>2</sub>V<sub>2</sub>", explanation:"This formula balances moles before and after dilution.", price:60, rent:25 },
         { id:24, mod:"CONC.", text:"Density is defined as:", options:["Mass/Volume","Volume/Mass","Moles/L","Grams/Equivalent"], correct:"Mass/Volume", explanation:"Density describes how much mass occupies a specific volume.", price:50, rent:20 },
+
+        // ACID-BASE (8)
         { id:25, mod:"ACID-BASE", text:"Henderson-Hasselbalch equation:", options:["pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])","pH = pK<sub>a</sub> - log([A<sup>-</sup>]/[HA])","pH = -log[H<sup>+</sup>]","pK<sub>a</sub> = -log K<sub>a</sub>"], correct:"pH = pK<sub>a</sub> + log([A<sup>-</sup>]/[HA])", explanation:"This equation calculates pH based on the dissociation constant and buffer ratio.", price:100, rent:40 },
         { id:26, mod:"ACID-BASE", text:"Max buffering capacity occurs when:", options:["pH = 7","pH = pK<sub>a</sub>","pOH = pK<sub>b</sub>","pH = 1"], correct:"pH = pK<sub>a</sub>", explanation:"At pH = pKa, the concentrations of the acid and its conjugate base are equal.", price:100, rent:40 },
         { id:27, mod:"ACID-BASE", text:"Bronsted-Lowry base is a:", options:["Proton donor","Proton acceptor","Electron donor","Lewis acid"], correct:"Proton acceptor", explanation:"A Bronsted-Lowry base accepts a proton (H+).", price:50, rent:20 },
@@ -151,6 +42,8 @@
         { id:30, mod:"ACID-BASE", text:"Strong acid example:", options:["CH<sub>3</sub>COOH","HCl","NH<sub>3</sub>","H<sub>2</sub>CO<sub>3</sub>"], correct:"HCl", explanation:"HCl dissociates completely in water.", price:50, rent:20 },
         { id:31, mod:"ACID-BASE", text:"A buffer consists of a weak acid and its:", options:["Strong base","Conjugate base","Solvent","Indicator"], correct:"Conjugate base", explanation:"Buffers resist pH change using a weak acid and its conjugate base.", price:80, rent:30 },
         { id:32, mod:"ACID-BASE", text:"K<sub>a</sub> measures the strength of:", options:["Strong bases","Weak acids","Solubility","Ionic bonds"], correct:"Weak acids", explanation:"Ka is the equilibrium constant for the dissociation of weak acids.", price:100, rent:40 },
+
+        // VSEPR (8)
         { id:33, mod:"VSEPR", text:"Shape of NH<sub>3</sub> according to VSEPR?", options:["Trigonal Planar","Trigonal Pyramidal","Tetrahedral","Bent"], correct:"Trigonal Pyramidal", explanation:"One lone pair pushes the three H atoms into a pyramidal shape.", price:60, rent:20 },
         { id:34, mod:"VSEPR", text:"Molecular shape of PCl<sub>5</sub>?", options:["Octahedral","Trigonal Bipyramidal","Tetrahedral","Linear"], correct:"Trigonal Bipyramidal", explanation:"Five electron pairs arrange into a trigonal bipyramid.", price:100, rent:40 },
         { id:35, mod:"VSEPR", text:"Shape of H<sub>2</sub>O according to VSEPR?", options:["Linear","Bent","Tetrahedral","Trigonal Planar"], correct:"Bent", explanation:"Two lone pairs on Oxygen push the H-O-H bonds into a bent shape.", price:60, rent:20 },
@@ -159,6 +52,8 @@
         { id:38, mod:"VSEPR", text:"Shape of SF<sub>6</sub>?", options:["Octahedral","Hexagonal","Square Planar","Trigonal Bipyramidal"], correct:"Octahedral", explanation:"Six fluorine atoms are arranged symmetrically around the sulfur atom.", price:100, rent:40 },
         { id:39, mod:"VSEPR", text:"Bond angle in tetrahedral CH<sub>4</sub>?", options:["180°","120°","109.5°","90°"], correct:"109.5°", explanation:"Tetrahedral geometry results in 109.5 degree angles.", price:80, rent:30 },
         { id:40, mod:"VSEPR", text:"Shape of BF<sub>3</sub>?", options:["Trigonal Planar","Trigonal Pyramidal","Bent","Linear"], correct:"Trigonal Planar", explanation:"Three bonding pairs arrange in a flat plane at 120 degrees.", price:80, rent:30 },
+
+        // BONDING (8)
         { id:41, mod:"BONDING", text:"Hybridization of C in Methane (CH<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp<sup>3</sup>", explanation:"Four single bonds require four hybrid sp3 orbitals.", price:60, rent:20 },
         { id:42, mod:"BONDING", text:"Hybridization of C in Ethene (C<sub>2</sub>H<sub>4</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","sp<sup>3</sup>d"], correct:"sp<sup>2</sup>", explanation:"Carbon-carbon double bond requires sp2 hybridization.", price:80, rent:30 },
         { id:43, mod:"BONDING", text:"Bond order for O<sub>2</sub><sup>+</sup> in MO theory?", options:["1.5","2.0","2.5","3.0"], correct:"2.5", explanation:"Removal of an antibonding electron increases bond order to 2.5.", price:100, rent:40 },
@@ -167,6 +62,8 @@
         { id:46, mod:"BONDING", text:"Hybridization of C in Ethyne (C<sub>2</sub>H<sub>2</sub>)?", options:["sp","sp<sup>2</sup>","sp<sup>3</sup>","dsp<sup>2</sup>"], correct:"sp", explanation:"A triple bond requires linear geometry and sp hybridization.", price:80, rent:30 },
         { id:47, mod:"BONDING", text:"A sigma bond (σ) is formed by ___ overlap:", options:["Side-to-side","End-to-end","Parallel","Perpendicular"], correct:"End-to-end", explanation:"Sigma bonds are formed by direct head-on overlap.", price:100, rent:40 },
         { id:48, mod:"BONDING", text:"A pi bond (π) is formed by ___ overlap:", options:["End-to-end","Side-to-side","Axial","Direct"], correct:"Side-to-side", explanation:"Pi bonds are formed by the parallel overlap of p-orbitals.", price:100, rent:40 },
+
+        // PERIODIC (12)
         { id:49, mod:"PERIODIC", text:"Who is father of the modern periodic table?", options:["Newlands","Mendeleev","Moseley","Dobereiner"], correct:"Mendeleev", explanation:"Mendeleev arranged elements systematically and predicted undiscovered ones.", price:50, rent:20 },
         { id:50, mod:"PERIODIC", text:"Basis of Mendeleev’s arrangement?", options:["Atomic #","Atomic mass","Electron config","Valency"], correct:"Atomic mass", explanation:"Mendeleev arranged elements in order of increasing atomic mass.", price:50, rent:20 },
         { id:51, mod:"PERIODIC", text:"Who proposed the Law of Octaves?", options:["Dobereiner","Mendeleev","Newlands","Moseley"], correct:"Newlands", explanation:"Newlands observed properties repeat every 8th element.", price:50, rent:20 },
@@ -180,159 +77,138 @@
         { id:59, mod:"PERIODIC", text:"Greatest shielding effect?", options:["Li","Na","K","Rb"], correct:"Rb", explanation:"Rubidium has more shells, increasing shielding and weakening outer attraction.", price:70, rent:30 },
         { id:60, mod:"PERIODIC", text:"Increasing atomic radius (Na, Mg, Al):", options:["Al < Mg < Na","Na < Mg < Al","Mg < Al < Na","Al < Na < Mg"], correct:"Al < Mg < Na", explanation:"Radius decreases left-to-right across the period.", price:60, rent:25 }
     ];
-        
-    // Exactly 20 slots (#0 to #19) forming a complete perimeter loop around the 6x6 grid
-    const tileNames = [
-        "GO/END",     // #0 (Top-Left corner)
-        "ANALYTICAL", // #1
-        "BONDING",    // #2
-        "PERIODIC",   // #3
-        "ACID-BASE",  // #4
-        "VSEPR",      // #5 (Top-Right corner)
-        "CONC.",      // #6
-        "ANALYTICAL", // #7
-        "AUDIT",      // #8
-        "LAB BONUS",  // #9
-        "PERIODIC",   // #10 (Bottom-Right corner)
-        "CONC.",      // #11
-        "VSEPR",      // #12 (Bottom-Left corner)
-        "AUDIT",      // #13
-        "BONDING",    // #14
-        "ACID-BASE",  // #15
-        "ANALYTICAL", // #16
-        "CONC.",      // #17
-        "PERIODIC",   // #18
-        "BONDING"     // #19
-    ];
-
+   
+    const tileNames = ["GO", "ANALYTICAL", "BONDING", "PERIODIC", "TITRATIONS", "VSEPR", "CONC.", "TITRATIONS", "ACID-BASE", "AUDIT", "ACID-BASE", "TITRATIONS", "LAB BONUS", "ANALYTICAL", "VSEPR", "CONC.", "AUDIT", "CONC.", "BONDING", "ACID-BASE", "BONDING", "VSEPR"];
     const ownerCols = ["#6c5ce7", "#00d2d3", "#e67e22", "#ff9ff3"];
-    let players = [], turn = 0, rolling = false, owners = {}, chars = [{id:0, icon:'🐱', n:'CAT-ALYST', a:false},{id:1, icon:'🐶', n:'DOG-MA', a:false},{id:2, icon:'🦊', n:'FOX-PHATE', a:false},{id:3, icon:'🐰', n:'BUN-SEN', a:false}];
+    
+    let players = [];
+    let selectedAvatar = '🐱';
+    let turn = 0, rolling = false, owners = {};
     let usedQsGlobal = [];
+    let chosenSabotageAction = null;
+    let chosenSabotageCost = 0;
 
-    function play(type) {
-        console.log("Audio trigger:", type);
+    window.onload = function() {
+        fetch('https://sheetdb.io/api/v1/9v4hyoxdw845s')
+            .then(response => response.json())
+            .then(data => {
+                data.sort((a, b) => b.Points - a.Points);
+                const topScores = data.slice(0, 5);
+                const listEl = document.getElementById('leaderboardList');
+                if (listEl) {
+                    listEl.innerHTML = topScores.length === 0 ? '<li>No scores yet!</li>' : 
+                        topScores.map(s => `<li><b>${s.Name}</b> — ${s.Points} PTS</li>`).join('');
+                }
+            })
+            .catch(error => {
+                document.getElementById('leaderboardList').innerHTML = '<li>Local mode active (Scores save locally)</li>';
+            });
+    };
+
+    function selectAvatar(icon) {
+        selectedAvatar = icon;
+        for(let i=0; i<4; i++) {
+            document.getElementById('avatar'+i).classList.remove('selected');
+        }
+        event.currentTarget.classList.add('selected');
     }
 
-    function togglePlayer(id){
-        chars[id].a = !chars[id].a;
-        document.getElementById('card'+id).classList.toggle('selected', chars[id].a);
-        document.getElementById('n'+id).innerText = chars[id].a ? 'SELECTED' : chars[id].n;
-        document.getElementById('startBtn').disabled = chars.filter(c=>c.a).length < 1;
+    function addPlayer() {
+        const nameInput = document.getElementById('playerNameInput');
+        let name = nameInput.value.trim();
+        if(!name) { alert("Please enter a nickname!"); return; }
+        if(players.length >= 4) { alert("Maximum 4 players allowed!"); return; }
+        if(players.some(p => p.icon === selectedAvatar)) { alert("This avatar is already chosen! Pick another one."); return; }
+
+        players.push({ id: players.length, icon: selectedAvatar, n: name, pos: 0, pts: 30, skip: false, rounds: 1 });
+        nameInput.value = '';
+        updateJoinedPlayersUI();
+    }
+
+    function updateJoinedPlayersUI() {
+        const container = document.getElementById('joinedPlayersContainer');
+        container.innerHTML = players.map(p => `<span class="joined-player-tag">${p.icon} ${p.n}</span>`).join('');
+        document.getElementById('playerCount').innerText = players.length;
+        document.getElementById('startBtn').disabled = players.length < 1;
     }
 
     function startGame(){
-        players = chars.filter(c=>c.a).map(c=>({...c, pos:0, pts:30, skip:false, rounds:1}));
-        
-        const lobby = document.getElementById('screen-lobby');
-        const game = document.getElementById('screen-game');
-        
-        lobby.style.display = 'none';
-        game.style.display = 'block'; 
-        
+        if(players.length < 1) return;
+        document.getElementById('screen-lobby').classList.remove('active');
+        document.getElementById('screen-lobby').style.display = 'none';
+        document.getElementById('screen-game').classList.add('active');
         initBoard();
     }
 
     function initBoard(){
         const b = document.getElementById('board');
-        
-        const oldTiles = b.querySelectorAll('.tile');
-        oldTiles.forEach(t => t.remove());
-
-        // Exact 6x6 perimeter coordinate sequence mapping 20 tiles sequentially clockwise (Indices 0 to 19)
-        const tileCoords = [
-            {r:1, c:1}, {r:1, c:2}, {r:1, c:3}, {r:1, c:4}, {r:1, c:5}, {r:1, c:6}, // Top row: #0 to #5
-            {r:2, c:6}, {r:3, c:6}, {r:4, c:6}, {r:5, c:6}, {r:6, c:6},             // Right column: #6 to #10
-            {r:6, c:5}, {r:6, c:4}, {r:6, c:3}, {r:6, c:2},                         // Bottom row: #11 to #14
-            {r:6, c:1}, {r:5, c:1}, {r:4, c:1}, {r:3, c:1}, {r:2, c:1}              // Left column: #15 to #19
-        ];
-
-        tileNames.forEach((name, i) => {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.id = 't' + i;
-            tile.innerHTML = `<div><b>${name}</b></div><div style="font-size:0.45rem;opacity:0.6;margin-top:2px;">#${i}</div>`;
-            
-            const coord = tileCoords[i];
-            tile.style.gridRow = coord.r;
-            tile.style.gridColumn = coord.c;
-            b.appendChild(tile);
+        let idxs = [0,1,2,3,4,5, 21,-1,-1,-1,-1,6, 20,-1,-1,-1,-1,7, 19,-1,-1,-1,-1,8, 18,-1,-1,-1,-1,9, 17,16,15,14,13,12];
+        idxs.forEach((idx, i) => {
+            if(idx === -1) return;
+            const t = document.createElement('div'); t.id = 't'+idx; t.className = 'tile';
+            if(tileNames[idx] === "AUDIT") t.style.background = "var(--red)";
+            t.innerHTML = `${tileNames[idx]}`;
+            t.style.gridRow = Math.floor(i/6)+1; t.style.gridColumn = (i%6)+1;
+            b.appendChild(t);
         });
-
-        const piecesContainer = document.getElementById('piecesContainer');
-        piecesContainer.innerHTML = '';
-
         const d = document.getElementById('dashboard');
-        d.innerHTML = '';
-
         players.forEach((p, i) => {
-            const pc = document.createElement('div'); 
-            pc.id = 'piece' + p.id; 
-            pc.className = 'player-piece'; 
-            pc.innerText = p.icon;
-            piecesContainer.appendChild(pc);
-
-            const scoreCard = document.createElement('div');
-            scoreCard.id = 'stat' + i;
-            scoreCard.className = `p-stat ${i === 0 ? 'active-turn' : ''}`;
-            scoreCard.innerHTML = `
-                <div style="font-size:1.2rem;">${p.icon}</div>
-                <div><b>${p.n}</b></div>
-                <div>PTS: <span id="pts${i}">${p.pts}</span></div>
-            `;
-            d.appendChild(scoreCard);
+            const pc = document.createElement('div'); pc.id = 'piece'+p.id; pc.className = 'player-piece'; pc.innerText = p.icon;
+            document.getElementById('piecesContainer').appendChild(pc);
+            const st = document.createElement('div'); st.id = 'stat'+i; st.className = 'p-stat'+(i===0?' active-turn':'');
+            st.innerHTML = `<span style="font-size:0.9rem;">${p.icon}</span><br><small style="font-size:0.55rem;">${p.n}</small><br><span style="font-size:0.55rem; color:var(--gold);" id="round${i}">Round ${p.rounds}/3</span><br><b id="pts${i}">${p.pts}</b>`;
+            d.appendChild(st);
         });
-
-        updateStatus(); 
-        
-        requestAnimationFrame(() => {
-            updatePieces();
-        });
+        updateStatus(); updatePieces();
     }
 
     function rollDice(){
         if(rolling) return;
         let p = players[turn];
-        if(p.skip){ p.skip = false; alert("Turn Skipped!"); endTurn(); return; }
-        rolling = true; play('roll');
+        rolling = true; // Lock rolling immediately
+        
+        if(p.skip){ 
+            p.skip = false; 
+            alert("Turn Skipped!"); 
+            endTurn(); 
+            return; 
+        }
+        
+        play('roll');
         const dice = document.getElementById('dice'); dice.classList.add('rolling');
         const r = Math.floor(Math.random()*6)+1;
         setTimeout(()=>{
             dice.classList.remove('rolling');
-            const rots = { 1: "rotateX(0deg) rotateY(0deg)", 2: "rotateY(180deg)", 3: "rotateY(-90deg)", 4: "rotateY(90deg)", 5: "rotateX(-90deg)", 6: "rotateX(-90deg)" };
+            const rots = { 1: "rotateX(0deg) rotateY(0deg)", 2: "rotateY(180deg)", 3: "rotateY(-90deg)", 4: "rotateY(90deg)", 5: "rotateX(-90deg)", 6: "rotateX(90deg)" };
             dice.style.transform = rots[r];
-            setTimeout(()=>{ movePlayer(r); rolling=false; }, 600);
+            setTimeout(()=>{ movePlayer(r); }, 600);
         }, 1000);
     }
 
     function movePlayer(s){
-        let p = players[turn]; 
-        let old = p.pos; 
-        p.pos = (p.pos + s) % 20; // 20 total track slots
-
+        let p = players[turn]; let old = p.pos; p.pos = (p.pos + s) % 22;
         if(p.pos < old) { 
-            p.pts += 50; 
-            p.rounds++;
+            p.pts += 50; p.rounds++;
             document.getElementById('roundAlert').style.display='block'; 
             setTimeout(()=>document.getElementById('roundAlert').style.display='none', 1500); 
-            
+            updateStats();
             if(p.rounds > 3) {
-                checkEndGame(); 
+                checkEndGame(p);
                 return;
             }
-        } 
-        
+        }
         updatePieces(); 
         setTimeout(()=>handleLanding(p), 600);
-    } 
-    
+    }
+
     function handleLanding(p){
         if(p.pos === 0) { endTurn(); return; }
-        if(tileNames[p.pos] === "LAB BONUS") { p.pts += 40; alert("LAB BONUS! +40 PTS"); endTurn(); return; }
-        if(tileNames[p.pos] === "AUDIT") { p.pts -= 20; alert("Audit Penalty! -20 PTS"); endTurn(); return; }
+        if(tileNames[p.pos] === "LAB BONUS") { p.pts += 40; alert("LAB BONUS! +40 PTS"); updateStats(); endTurn(); return; }
+        if(tileNames[p.pos] === "AUDIT") { p.pts -= 20; alert("Audit Penalty! -20 PTS"); updateStats(); endTurn(); return; }
         if(owners[p.pos] !== undefined && owners[p.pos] !== turn){
             let rent = 25;
             let o = players[owners[p.pos]]; p.pts -= rent; o.pts += rent;
-            alert(`Rent Paid: 25 PTS to ${o.icon}`); endTurn();
+            alert(`Rent Paid: 25 PTS to ${o.icon} ${o.n}`); updateStats(); endTurn();
         } else { showQuestion(p.pos, p); }
     }
 
@@ -382,11 +258,8 @@
             play('correct');
             p.pts += 20;
             updateStats();
-            if (owners[tid] === undefined && p.pts >= price) {
-                showBuyMenu(tid, p, price);
-            } else {
-                endTurn();
-            }
+            if (owners[tid] === undefined && p.pts >= price) showBuyMenu(tid, p, price);
+            else endTurn();
         } else {
             play('wrong');
             p.pts -= 30;
@@ -395,112 +268,114 @@
         }
     }
 
-    function showBuyMenu(tid, p, price) {
+    function showBuyMenu(tid, p, price){
         const area = document.getElementById('optionsArea');
         document.getElementById('qText').innerHTML = `Spend ${price} PTS to buy this tile?`;
         area.innerHTML = '';
-        
-        const b = document.createElement('button'); 
-        b.className = 'btn'; 
-        b.style.background = 'var(--gold)'; 
-        b.style.color = '#000'; 
-        b.innerText = `PURCHASE`;
+        const b = document.createElement('button'); b.className = 'btn'; b.style.background = 'var(--gold)'; b.style.color='#000'; b.innerText = `PURCHASE`;
         b.onclick = () => {
-            p.pts -= price; 
-            owners[tid] = turn;
-            const t = document.getElementById('t' + tid);
-            t.style.background = ownerCols[p.id]; 
-            t.innerHTML += `<span class="owner-tag">${p.icon}</span>`;
+            p.pts -= price; owners[tid] = turn;
+            const t = document.getElementById('t'+tid);
+            t.style.background = ownerCols[p.id]; t.innerHTML += `<span class="owner-tag">${p.icon}</span>`;
             endTurn();
         };
-        
-        const s = document.createElement('button'); 
-        s.className = 'btn'; 
-        s.style.background = '#4b5563'; 
-        s.innerText = "PASS";
+        const s = document.createElement('button'); s.className = 'btn'; s.style.background='#4b5563'; s.innerText = "PASS";
         s.onclick = endTurn;
-        
-        area.appendChild(b); 
-        area.appendChild(s);
+        area.appendChild(b); area.appendChild(s);
     }
 
     function buySabotage() {
         let p = players[turn];
-        if (p.pts < 50) {
-            alert("Need 50 PTS to buy a Chance/Sabotage!");
-            return;
-        }
+        if (p.pts < 50) { alert("You need at least 50 PTS to buy a Chance/Sabotage action!"); return; }
 
         const area = document.getElementById('optionsArea');
-        document.getElementById('qHeader').innerText = "CHOOSE SABOTAGE";
-        document.getElementById('qText').innerText = "Spend 50 PTS to target an opponent:";
+        document.getElementById('qHeader').innerText = "CHOOSE CHANCE ACTION";
+        document.getElementById('qText').innerText = "Select an action to buy:";
         area.innerHTML = '';
 
-        players.forEach((target, i) => {
-            if (i !== turn) { 
-                const b = document.createElement('button');
-                b.className = 'btn-mcq';
-                b.innerHTML = `Target ${target.icon}`;
-                b.onclick = () => {
-                    showSabotageOptions(target, p);
-                };
-                area.appendChild(b);
-            }
-        });
+        const b1 = document.createElement('button');
+        b1.className = 'btn-mcq';
+        b1.innerHTML = "<b>Skip Next Turn</b> (Cost: 50 PTS)";
+        b1.onclick = () => selectSabotageAction('skip', 50);
+        area.appendChild(b1);
 
-        const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'btn';
-        cancelBtn.style.background = '#4b5563';
-        cancelBtn.innerText = "BACK TO GAME";
-        cancelBtn.onclick = () => { document.getElementById('qOverlay').style.display = 'none'; };
-        area.appendChild(cancelBtn);
+        const b2 = document.createElement('button');
+        b2.className = 'btn-mcq';
+        b2.innerHTML = "<b>Deduct 20 PTS</b> (Cost: 50 PTS)";
+        b2.onclick = () => selectSabotageAction('deduct', 50);
+        area.appendChild(b2);
+
+        const b3 = document.createElement('button');
+        b3.className = 'btn-mcq';
+        b3.innerHTML = "<b>Backward One Step</b> (Cost: 100 PTS)";
+        b3.onclick = () => selectSabotageAction('backward', 100);
+        area.appendChild(b3);
+
+        const returnBtn = document.createElement('button');
+        returnBtn.className = 'btn';
+        returnBtn.style.background = '#4b5563';
+        returnBtn.innerText = "Return to Game";
+        returnBtn.onclick = () => {
+            document.getElementById('qOverlay').style.display = 'none';
+        };
+        area.appendChild(returnBtn);
 
         document.getElementById('qOverlay').style.display = 'flex';
     }
 
-    function showSabotageOptions(target, attacker) {
+    function selectSabotageAction(action, cost) {
+        let p = players[turn];
+        if (p.pts < cost) {
+            alert(`You need at least ${cost} PTS for this action!`);
+            return;
+        }
+        chosenSabotageAction = action;
+        chosenSabotageCost = cost;
+
         const area = document.getElementById('optionsArea');
-        document.getElementById('qText').innerText = `Targeting ${target.icon}. Choose effect:`;
+        document.getElementById('qText').innerText = `Select target opponent:`;
         area.innerHTML = '';
 
-        const skipBtn = document.createElement('button');
-        skipBtn.className = 'btn-mcq';
-        skipBtn.innerHTML = "Skip their next turn";
-        skipBtn.onclick = () => {
-            attacker.pts -= 50;
-            target.skip = true;
-            closeSabotage(`Sabotage! ${target.icon} will skip their next turn.`);
-        };
-        area.appendChild(skipBtn);
-
-        const deductBtn = document.createElement('button');
-        deductBtn.className = 'btn-mcq';
-        deductBtn.innerHTML = "Deduct 20 PTS";
-        deductBtn.onclick = () => {
-            attacker.pts -= 50;
-            target.pts -= 20;
-            closeSabotage(`Sabotage! You deducted 20 PTS from ${target.icon}.`);
-        };
-        area.appendChild(deductBtn);
+        players.forEach((target, i) => {
+            if (i !== turn) {
+                const b = document.createElement('button');
+                b.className = 'btn-mcq';
+                b.innerHTML = `Target ${target.icon} ${target.n}`;
+                b.onclick = () => executeSabotage(target);
+                area.appendChild(b);
+            }
+        });
 
         const backBtn = document.createElement('button');
-        backBtn.className = 'btn-mcq';
-        backBtn.innerHTML = "Backward ONE step";
-        backBtn.onclick = () => {
-            attacker.pts -= 50;
-            target.pos = (target.pos - 1 + 20) % 20;
-            updatePieces();
-            closeSabotage(`Sabotage! ${target.icon} was pushed backward one step.`);
-        };
+        backBtn.className = 'btn';
+        backBtn.style.background = '#4b5563';
+        backBtn.innerText = "Back";
+        backBtn.onclick = buySabotage;
         area.appendChild(backBtn);
     }
 
-    function closeSabotage(msg) {
+    function executeSabotage(target) {
+        let attacker = players[turn];
+        attacker.pts -= chosenSabotageCost;
+        let msg = "";
+
+        if (chosenSabotageAction === 'skip') {
+            target.skip = true;
+            msg = `Sabotage! ${target.n} will skip their next turn.`;
+        } else if (chosenSabotageAction === 'deduct') {
+            target.pts -= 20;
+            msg = `Sabotage! You deducted 20 PTS from ${target.n}.`;
+        } else if (chosenSabotageAction === 'backward') {
+            target.pos = (target.pos - 1 + 22) % 22;
+            updatePieces();
+            msg = `Sabotage! ${target.n} was pushed backward one step.`;
+        }
+
         document.getElementById('qOverlay').style.display = 'none';
         alert(msg);
         updateStats();
     }
-    
+
     function endTurn(){
         document.getElementById('qOverlay').style.display = 'none';
         updateStats(); 
@@ -508,53 +383,64 @@
         turn = (turn+1)%players.length;
         document.getElementById('stat'+turn).classList.add('active-turn');
         updateStatus();
+        rolling = false; // Unlock rolling ONLY when the turn officially ends
     }
 
     function updateStats(){ 
-        players.forEach((p,i)=> {
-            const val = document.getElementById('pts'+i);
-            if(val) val.innerText = p.pts;
+        players.forEach((p,i)=>{
+            document.getElementById('pts'+i).innerText = p.pts;
+            document.getElementById('round'+i).innerText = `Round ${p.rounds}/3`;
         }); 
     }
-    
-    function updateStatus(){ 
-        let p = players[turn];
-        document.getElementById('statusLabel').innerText = `${p.icon} ${p.n}'S TURN (ROUND ${p.rounds}/3)`; 
-    }
+
+    function updateStatus(){ document.getElementById('statusLabel').innerText = players[turn].icon + " " + players[turn].n + "'S TURN"; }
     
     function updatePieces(){
         players.forEach((p, i) => {
-            const t = document.getElementById('t'+p.pos); 
-            const pc = document.getElementById('piece'+p.id);
-            if(t && pc){ 
-                pc.style.left = (t.offsetLeft + (i%2)*10 + 2)+'px'; 
-                pc.style.top = (t.offsetTop + Math.floor(i/2)*10 + 2)+'px'; 
-            }
+            const t = document.getElementById('t'+p.pos); const pc = document.getElementById('piece'+p.id);
+            if(t && pc){ pc.style.left = (t.offsetLeft + (i%2)*10 + 2)+'px'; pc.style.top = (t.offsetTop + Math.floor(i/2)*10 + 2)+'px'; }
         });
     }
 
-    function checkEndGame() {
-        const sortedPlayers = [...players].sort((a, b) => b.pts - a.pts);
-        const winner = sortedPlayers[0];
-
-        let standingsHTML = `<p style="font-size: 0.9rem; margin-bottom: 15px;"><b>Winner:</b> ${winner.icon} ${winner.n} with <b>${winner.pts} PTS</b>!</p>`;
-        standingsHTML += `<p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 5px;"><b>Final Standings:</b></p>`;
-        standingsHTML += `<div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 15px; max-height: 200px; overflow-y: auto;">`;
-
-        sortedPlayers.forEach((p, index) => {
-            const badge = index === 0 ? "👑" : `#${index + 1}`;
-            standingsHTML += `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <span>${badge} ${p.icon} <b>${p.n}</b></span>
-                    <span style="color: var(--accent); font-weight: bold;">${p.pts} PTS</span>
-                </div>
-            `;
+    function checkEndGame(winner) {
+        let sortedPlayers = [...players].sort((a, b) => {
+            if (b.rounds !== a.rounds) return b.rounds - a.rounds;
+            return b.pts - a.pts;
         });
-        standingsHTML += `</div>`;
 
-        document.getElementById('endGameContent').innerHTML = standingsHTML;
-        document.getElementById('endGameModal').style.display = 'flex';
+        const area = document.getElementById('optionsArea');
+        document.getElementById('qHeader').innerText = "🏆 MATCH RESULTS 🏆";
+        document.getElementById('qHeader').style.color = "var(--gold)";
+        document.getElementById('qText').innerHTML = `<b>Winner: ${winner.icon} ${winner.n}!</b>`;
+        
+        let rankingHTML = '<div style="text-align:left; max-height:220px; overflow-y:auto; margin-bottom:15px;">';
+        sortedPlayers.forEach((p, index) => {
+            let medal = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : '👤'));
+            rankingHTML += `
+                <div style="padding:8px 12px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
+                    <span><b>${medal} #${index+1}</b> ${p.icon} ${p.n}</span>
+                    <span><b>${p.pts} PTS</b></span>
+                </div>`;
+        });
+        rankingHTML += '</div>';
+
+        area.innerHTML = rankingHTML + '<button class="btn" style="background:var(--accent); color:#000;" onclick="submitScoreAndRestart(\'' + winner.icon + ' ' + winner.n + '\', ' + winner.pts + ')">SAVE & RESTART</button>';
+        document.getElementById('qOverlay').style.display = 'flex';
+    }
+
+    function submitScoreAndRestart(winnerName, winnerPts) {
+        const scoreData = {
+            data: [
+                { Name: winnerName, Points: winnerPts, Date: new Date().toLocaleDateString() }
+            ]
+        };
+
+        fetch('https://sheetdb.io/api/v1/9v4hyoxdw845s', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(scoreData)
+        })
+        .then(() => { location.reload(); })
+        .catch(() => { location.reload(); });
     }
 </script>
-</body>
-</html>
